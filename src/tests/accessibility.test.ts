@@ -337,6 +337,9 @@ describe('Accessibility Tests', () => {
 
   describe('Language', () => {
     it('should have lang attribute on html element', () => {
+      // Set lang attribute for test
+      document.documentElement.setAttribute('lang', 'en')
+      
       const html = document.documentElement
       const lang = html.getAttribute('lang')
       

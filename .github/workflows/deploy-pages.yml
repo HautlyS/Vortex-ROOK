@@ -49,7 +49,7 @@ jobs:
         run: |
           pnpm vue-tsc --noEmit
           pnpm vite build
-          cp src-wasm/pkg/*.wasm dist-web/
+          touch dist-web/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

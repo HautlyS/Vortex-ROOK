@@ -4,7 +4,7 @@ import { resolve } from 'path'
 import { readFileSync } from 'fs'
 
 const isWeb = process.env.BUILD_TARGET === 'web'
-const basePath = process.env.VITE_BASE_PATH || (isWeb ? './' : '/')
+const basePath = process.env.VITE_BASE_PATH || (isWeb ? '/Vortex-ROOK/' : '/')
 
 // https://vitejs.dev/config/
 export default defineConfig({
