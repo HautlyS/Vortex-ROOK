@@ -2,14 +2,13 @@
  * E2E-Style Workflow Tests
  * Tests complete user workflows from start to finish
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useDocumentStore } from '@/stores/documentStore'
 import { useUIStore } from '@/stores/uiStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { useSyncStore } from '@/stores/syncStore'
 import { createEmptyProject } from '@/models'
-import type { LayerObject, PageData } from '@/models'
 
 // Mock all external dependencies
 vi.mock('@/bridge', () => ({
@@ -300,13 +299,12 @@ describe('E2E Workflow: Document Editing', () => {
   describe('Scenario: User handles errors gracefully', () => {
     it('should handle import failure', async () => {
       const documentStore = useDocumentStore()
-      const uiStore = useUIStore()
       
       const { importDocumentWithAnalysis } = await import('@/bridge')
       vi.mocked(importDocumentWithAnalysis).mockResolvedValue({
         success: false,
         message: 'File format not supported',
-        data: null
+        data: undefined
       })
       
       const result = await documentStore.importDocument()
@@ -368,7 +366,9 @@ describe('E2E Workflow: Collaborative Editing', () => {
       // Step 6: Another user's cursor moves
       syncStore.updateCursor('user-2', { x: 100, y: 200, pageIndex: 0 })
       const user = syncStore.connectedUsers.find(u => u.id === 'user-2')
-      expect(user?.cursor).toEqual({ x: 100, y: 200, pageIndex: 0 })
+      expect(user?.cursorX).toBe(100)
+      expect(user?.cursorY).toBe(200)
+      expect(user?.cursorPage).toBe(0)
       
       // Step 7: User disconnects
       syncStore.disconnect()

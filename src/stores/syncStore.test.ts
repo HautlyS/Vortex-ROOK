@@ -104,7 +104,9 @@ describe('SyncStore', () => {
       store.updateCursor('user-1', { x: 100, y: 200, pageIndex: 0 })
       
       const user = store.connectedUsers.find(u => u.id === 'user-1')
-      expect(user?.cursor).toEqual({ x: 100, y: 200, pageIndex: 0 })
+      expect(user?.cursorX).toBe(100)
+      expect(user?.cursorY).toBe(200)
+      expect(user?.cursorPage).toBe(0)
     })
   })
 

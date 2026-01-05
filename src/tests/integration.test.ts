@@ -2,10 +2,9 @@
  * Integration Tests - Document Workflow
  * Tests complete workflows: import -> edit -> export
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useDocumentStore } from '@/stores/documentStore'
-import { useUIStore } from '@/stores/uiStore'
 import { createEmptyProject } from '@/models'
 import type { LayerObject, PageData, BookProjectData } from '@/models'
 
@@ -67,7 +66,6 @@ describe('Document Workflow Integration', () => {
   describe('Complete Import -> Edit -> Export Workflow', () => {
     it('should handle full document lifecycle', async () => {
       const documentStore = useDocumentStore()
-      const uiStore = useUIStore()
       
       // Step 1: Import document
       const { importDocumentWithAnalysis } = await import('@/bridge')
@@ -155,7 +153,7 @@ describe('Document Workflow Integration', () => {
       documentStore.document = createTestDocument(2)
       
       // Simulate concurrent updates
-      const updates = Array.from({ length: 10 }, (_, i) => 
+      Array.from({ length: 10 }, (_, i) => 
         documentStore.updateLayer(0, 'layer-0-0', { content: `Update ${i}` })
       )
       
@@ -175,7 +173,7 @@ describe('Document Workflow Integration', () => {
       vi.mocked(importDocumentWithAnalysis).mockResolvedValueOnce({
         success: false,
         message: 'Import failed',
-        data: null
+        data: undefined
       })
       
       const result1 = await documentStore.importDocument()
@@ -229,10 +227,6 @@ describe('Document Workflow Integration', () => {
       const documentStore = useDocumentStore()
       documentStore.document = createTestDocument(5)
       
-      // Get original page order
-      const originalOrder = documentStore.document!.document.pages.map(p => p.pageIndex)
-      
-      // Reorder pages (if implemented)
       // This tests the data structure integrity
       expect(documentStore.totalPages).toBe(5)
     })

@@ -8,7 +8,6 @@ import { useDocumentStore } from '@/stores/documentStore'
 import { useUIStore } from '@/stores/uiStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { createEmptyProject } from '@/models'
-import type { LayerObject, Bounds } from '@/models'
 
 vi.mock('@/bridge', () => ({
   importDocumentWithAnalysis: vi.fn(),

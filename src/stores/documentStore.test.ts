@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useDocumentStore } from './documentStore'
-import { createEmptyProject, createDefaultMetadata } from '@/models'
+import { createEmptyProject } from '@/models'
 import type { LayerObject, PageData, BookProjectData } from '@/models'
 
 // Mock bridge module

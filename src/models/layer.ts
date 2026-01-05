@@ -248,7 +248,11 @@ export interface LayerUpdates {
   fontWeight?: number
   fontStyle?: 'normal' | 'italic'
   textDecoration?: 'none' | 'underline' | 'line-through'
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
+  lineHeight?: number
+  letterSpacing?: number
   color?: string
+  backgroundColor?: string
   textAlign?: TextAlign
   role?: LayerRole
   imagePath?: string

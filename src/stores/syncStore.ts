@@ -8,7 +8,6 @@ import {
   parsePermissionLink,
   hostSession,
   joinSession,
-  disconnect,
   setOnMessage,
   setOnPeerChange,
   sendLayerUpdate,

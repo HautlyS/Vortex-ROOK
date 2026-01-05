@@ -9,6 +9,18 @@ import { useDocumentStore } from '@/stores/documentStore'
 import { createEmptyProject } from '@/models'
 import type { LayerObject } from '@/models'
 
+// Mock canvas manager
+vi.mock('@/canvas', () => ({
+  canvasManager: {
+    selectLayer: vi.fn()
+  }
+}))
+
+// Mock extra components
+vi.mock('./extra', () => ({
+  BackgroundTexture: { template: '<div><slot /></div>' }
+}))
+
 function createTestLayer(overrides: Partial<LayerObject> = {}): LayerObject {
   return {
     id: `layer-${Math.random().toString(36).substr(2, 9)}`,
