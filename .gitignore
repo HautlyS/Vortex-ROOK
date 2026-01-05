@@ -1,5 +1,8 @@
 # Dependencies
 node_modules/
+.gitignore
+.kiro
+pnpm-lock.yaml
 
 # Build outputs
 dist/

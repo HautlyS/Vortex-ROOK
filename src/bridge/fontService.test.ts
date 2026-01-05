@@ -40,7 +40,9 @@ describe('Font Service', () => {
       
       const { loadFont } = await import('./fontService')
       
-      await expect(loadFont('BadFont', 'invalid-url')).rejects.toThrow()
+      // loadFont returns false on failure, doesn't throw
+      const result = await loadFont('BadFont', 400)
+      expect(result).toBe(false)
     })
   })
 

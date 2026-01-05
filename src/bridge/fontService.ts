@@ -411,12 +411,19 @@ export function normalizeFontFamily(family: string): string {
   // Trim whitespace
   normalized = normalized.trim();
   
+  // Remove PDF subset prefix (e.g., ABCDEF+Arial -> Arial)
+  const plusIndex = normalized.indexOf('+');
+  if (plusIndex !== -1) {
+    normalized = normalized.substring(plusIndex + 1);
+  }
+  
   // Handle common variations
   const variations: Record<string, string> = {
     'arial': 'Arial',
     'helvetica': 'Helvetica',
     'times': 'Times New Roman',
     'times new roman': 'Times New Roman',
+    'timesnewromanpsmt': 'Times New Roman',
     'georgia': 'Georgia',
     'verdana': 'Verdana',
     'courier': 'Courier New',
