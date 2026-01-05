@@ -4,9 +4,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // Mock dependencies
-vi.mock('@/bridge', () => ({
-  isTauri: vi.fn(() => false),
-  invoke: vi.fn()
+vi.mock('@/bridge/environment', () => ({
+  isTauri: vi.fn(() => false)
+}))
+
+vi.mock('@/bridge/wasm', () => ({
+  getWasm: vi.fn(() => ({
+    update_layer: vi.fn().mockReturnValue(null),
+    get_system_fonts: vi.fn().mockReturnValue(['Arial', 'Helvetica'])
+  })),
+  initWasm: vi.fn().mockResolvedValue(undefined)
+}))
+
+vi.mock('@/bridge/fontService', () => ({
+  initFontService: vi.fn().mockResolvedValue(undefined),
+  getAllFonts: vi.fn().mockResolvedValue({
+    system: [{ family: 'Arial', name: 'Arial', style: 'normal', weight: 400, source: 'system', isVariable: false }],
+    google: [{ family: 'Roboto', variants: ['400', '700'], subsets: ['latin'], category: 'sans-serif' }],
+    embedded: []
+  }),
+  getSystemFonts: vi.fn().mockResolvedValue([
+    { family: 'Arial', name: 'Arial', style: 'normal', weight: 400, source: 'system', isVariable: false }
+  ]),
+  searchGoogleFonts: vi.fn().mockResolvedValue([
+    { family: 'Roboto', variants: ['400', '700'], subsets: ['latin'], category: 'sans-serif' }
+  ]),
+  loadGoogleFont: vi.fn().mockResolvedValue(undefined)
 }))
 
 describe('Typography Bridge', () => {
@@ -28,7 +51,9 @@ describe('Typography Bridge', () => {
       
       const fonts = await getAvailableFonts()
       
-      expect(Array.isArray(fonts)).toBe(true)
+      expect(fonts).toHaveProperty('system')
+      expect(fonts).toHaveProperty('google')
+      expect(Array.isArray(fonts.system)).toBe(true)
     })
 
     it('should load font by name', async () => {
@@ -78,6 +103,16 @@ describe('Typography Bridge', () => {
 
   describe('Font Metrics', () => {
     it('should calculate text metrics', async () => {
+      // Mock canvas context
+      const mockCtx = {
+        font: '',
+        measureText: vi.fn().mockReturnValue({ width: 100, actualBoundingBoxAscent: 12, actualBoundingBoxDescent: 4 })
+      }
+      const mockCanvas = {
+        getContext: vi.fn().mockReturnValue(mockCtx)
+      }
+      vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas as any)
+      
       const { calculateTextMetrics } = await import('./typographyBridge')
       
       const metrics = await calculateTextMetrics('Hello World', 'Arial', 16)
@@ -87,6 +122,16 @@ describe('Typography Bridge', () => {
     })
 
     it('should handle empty text', async () => {
+      // Mock canvas context
+      const mockCtx = {
+        font: '',
+        measureText: vi.fn().mockReturnValue({ width: 0, actualBoundingBoxAscent: 0, actualBoundingBoxDescent: 0 })
+      }
+      const mockCanvas = {
+        getContext: vi.fn().mockReturnValue(mockCtx)
+      }
+      vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas as any)
+      
       const { calculateTextMetrics } = await import('./typographyBridge')
       
       const metrics = await calculateTextMetrics('', 'Arial', 16)

@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src')
+      '@': resolve(__dirname, 'src'),
+      'book-creation-wasm': resolve(__dirname, 'src-wasm/pkg/book_creation_wasm.js')
     }
   },
   test: {
