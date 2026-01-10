@@ -109,19 +109,32 @@ export async function importDocument(
  */
 export async function importDocumentWithOptions(
   options: ImportOptions,
+  fileOrProgress?: { name: string; data: Uint8Array } | ((current: number, total: number, status: string) => void),
   onProgress?: (current: number, total: number, status: string) => void
 ): Promise<DocumentResponseWithAnalysis> {
-  // Pick file first
-  const file = await pickFile({ accept: ['.pdf', '.docx'] });
+  // Handle overloaded signature
+  let file: { name: string; data: Uint8Array } | null = null;
+  let progressCallback = onProgress;
+  
+  if (typeof fileOrProgress === 'function') {
+    progressCallback = fileOrProgress;
+  } else if (fileOrProgress) {
+    file = fileOrProgress;
+  }
+  
+  // Pick file if not provided
   if (!file) {
-    return { success: false, message: 'No file selected', data: undefined };
+    file = await pickFile({ accept: ['.pdf', '.docx'] });
+    if (!file) {
+      return { success: false, message: 'No file selected', data: undefined };
+    }
   }
 
   const isPdf = file.name.toLowerCase().endsWith('.pdf');
   
   if (!isPdf) {
     // DOCX always uses layers mode
-    onProgress?.(0, 1, 'Parsing DOCX...');
+    progressCallback?.(0, 1, 'Parsing DOCX...');
     const wasm = getWasm();
     return wasm.parse_docx(file.data);
   }
@@ -130,25 +143,29 @@ export async function importDocumentWithOptions(
   
   switch (options.mode) {
     case 'preserve':
-      return importPreserveMode(file.data, onProgress);
+      return importPreserveMode(file.data, options, progressCallback);
     
     case 'layers':
-      return importLayersMode(file.data, onProgress);
+      return importLayersMode(file.data, progressCallback);
     
     case 'ocr':
-      return importOcrMode(file.data, options, onProgress);
+      return importOcrMode(file.data, options, progressCallback);
     
     case 'print':
-      return importPrintMode(file.data, options, onProgress);
+      return importPrintMode(file.data, options, progressCallback);
+    
+    case 'combined':
+      return importCombinedMode(file.data, options, progressCallback);
     
     default:
-      return importLayersMode(file.data, onProgress);
+      return importLayersMode(file.data, progressCallback);
   }
 }
 
-/** Preserve mode: Render PDF as images, no editing */
+/** Preserve mode: Render PDF as images, no editing - good for print */
 async function importPreserveMode(
   data: Uint8Array,
+  options: ImportOptions,
   onProgress?: (current: number, total: number, status: string) => void
 ): Promise<DocumentResponseWithAnalysis> {
   onProgress?.(0, 1, 'Loading PDF (preserve mode)...');
@@ -157,6 +174,24 @@ async function importPreserveMode(
   const pages = await renderPdfPagesToImages(data, (current, total) => {
     onProgress?.(current, total, `Rendering page ${current}/${total}`);
   });
+  
+  // If imposition is requested, apply it
+  if (options.imposition) {
+    onProgress?.(pages.length, pages.length, 'Calculating print layout...');
+    const imposition = calculateImposition(pages.length, options.imposition);
+    
+    return {
+      success: true,
+      message: `Preserved: ${imposition.totalSheets} sheets for printing`,
+      data: { 
+        pageWidth: imposition.paperSize.width, 
+        pageHeight: imposition.paperSize.height, 
+        pages 
+      },
+      // Store imposition data for export
+      imposition,
+    } as DocumentResponseWithAnalysis;
+  }
   
   return {
     success: true,
@@ -299,6 +334,60 @@ async function importPrintMode(
       pageHeight: imposition.paperSize.height, 
       pages: imposedPages 
     },
+  };
+}
+
+/** Combined mode: Layers + optional OCR + optional print layout */
+async function importCombinedMode(
+  data: Uint8Array,
+  options: ImportOptions,
+  onProgress?: (current: number, total: number, status: string) => void
+): Promise<DocumentResponseWithAnalysis> {
+  onProgress?.(0, 1, 'Loading PDF (combined mode)...');
+  
+  // Start with layers extraction
+  const pages = await parsePdf(data, (current, total) => {
+    onProgress?.(current, total, `Extracting page ${current}/${total}`);
+  });
+  
+  const analysis = await analyzeWebPdf(data);
+  
+  // Run OCR if requested
+  if (options.ocrLanguage) {
+    const { ocrPageToLayers, renderPageToCanvas } = await import('./ocrService');
+    const { getCachedPage } = await import('./pdfParser');
+    
+    for (let i = 0; i < pages.length; i++) {
+      onProgress?.(i, pages.length, `OCR page ${i + 1}/${pages.length}`);
+      
+      const page = await getCachedPage(i + 1);
+      if (page) {
+        const canvas = await renderPageToCanvas(page, 2.0);
+        const ocrLayers = await ocrPageToLayers(canvas, i, pages[i].height);
+        pages[i].layers = [...pages[i].layers, ...ocrLayers];
+      }
+    }
+  }
+  
+  // Apply imposition if requested
+  if (options.imposition) {
+    onProgress?.(pages.length, pages.length, 'Calculating print layout...');
+    const imposition = calculateImposition(pages.length, options.imposition);
+    
+    return {
+      success: true,
+      message: `Combined: ${pages.length} pages, ${imposition.totalSheets} sheets`,
+      data: { pageWidth: pages[0]?.width || 612, pageHeight: pages[0]?.height || 792, pages },
+      analysis,
+      imposition,
+    } as DocumentResponseWithAnalysis;
+  }
+  
+  return {
+    success: true,
+    message: `Combined: ${pages.length} pages processed`,
+    data: { pageWidth: pages[0]?.width || 612, pageHeight: pages[0]?.height || 792, pages },
+    analysis,
   };
 }
 

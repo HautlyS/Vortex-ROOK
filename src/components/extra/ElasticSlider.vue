@@ -19,7 +19,10 @@
         class="transition-transform duration-200 ease-out"
       >
         <slot name="left-icon">
-          <component :is="leftIcon" v-if="leftIcon && typeof leftIcon === 'object'" />
+          <component
+            :is="leftIcon"
+            v-if="leftIcon && typeof leftIcon === 'object'"
+          />
 
           <span v-else-if="leftIcon">{{ leftIcon }}</span>
 
@@ -45,7 +48,10 @@
           class="flex flex-grow"
         >
           <div class="relative h-full flex-grow overflow-hidden rounded-full bg-gray-400">
-            <div class="absolute h-full bg-[#27FF64] rounded-full" :style="{ width: `${rangePercentage}%` }" />
+            <div
+              class="absolute h-full bg-[#27FF64] rounded-full"
+              :style="{ width: `${rangePercentage}%` }"
+            />
           </div>
         </div>
       </div>
@@ -58,7 +64,10 @@
         class="transition-transform duration-200 ease-out"
       >
         <slot name="right-icon">
-          <component :is="rightIcon" v-if="rightIcon && typeof rightIcon === 'object'" />
+          <component
+            :is="rightIcon"
+            v-if="rightIcon && typeof rightIcon === 'object'"
+          />
 
           <span v-else-if="rightIcon">{{ rightIcon }}</span>
 
@@ -67,7 +76,9 @@
       </div>
     </div>
 
-    <p class="absolute text-gray-400 transform -translate-y-6 font-medium tracking-wide">{{ Math.round(value) }}</p>
+    <p class="absolute text-gray-400 transform -translate-y-6 font-medium tracking-wide">
+      {{ Math.round(value) }}
+    </p>
   </div>
 </template>
 

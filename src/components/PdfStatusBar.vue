@@ -110,16 +110,35 @@ function handleAction() {
       <div class="flex items-center gap-2">
         <button
           v-if="showOcrButton"
-          @click="handleAction"
           :disabled="isProcessing"
           class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors
                  bg-amber-600 hover:bg-amber-500 text-white
                  disabled:opacity-50 disabled:cursor-not-allowed"
+          @click="handleAction"
         >
-          <span v-if="isProcessing" class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25" />
-              <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          <span
+            v-if="isProcessing"
+            class="flex items-center gap-1.5"
+          >
+            <svg
+              class="w-4 h-4 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="3"
+                class="opacity-25"
+              />
+              <path
+                d="M4 12a8 8 0 018-8"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
             </svg>
             Processing...
           </span>
@@ -130,22 +149,28 @@ function handleAction() {
 
         <button
           v-if="showVectorButton"
-          @click="handleAction"
           :disabled="isProcessing"
           class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors
                  bg-purple-600 hover:bg-purple-500 text-white
                  disabled:opacity-50 disabled:cursor-not-allowed"
+          @click="handleAction"
         >
           Convert Vectors
         </button>
 
         <!-- Dismiss -->
         <button
-          @click="emit('dismiss')"
           class="p-1.5 text-gray-400 hover:text-gray-200 rounded transition-colors"
           title="Dismiss"
+          @click="emit('dismiss')"
         >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>

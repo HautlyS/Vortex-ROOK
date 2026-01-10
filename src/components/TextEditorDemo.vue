@@ -27,11 +27,14 @@ onMounted(() => {
 <template>
   <div class="min-h-screen bg-dark-950 text-white p-6">
     <div class="max-w-7xl mx-auto space-y-8">
-      
       <!-- Header -->
       <div class="text-center space-y-3">
-        <h1 class="text-4xl font-bold text-gradient">ROOK Typography System</h1>
-        <p class="text-white/60 text-lg">Modular, Modern & Functional Text Editing</p>
+        <h1 class="text-4xl font-bold text-gradient">
+          ROOK Typography System
+        </h1>
+        <p class="text-white/60 text-lg">
+          Modular, Modern & Functional Text Editing
+        </p>
       </div>
 
       <!-- Main Toolbar -->
@@ -42,7 +45,9 @@ onMounted(() => {
       <!-- Modernized Text Editor -->
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold">Modernized Text Editor</h2>
+          <h2 class="text-2xl font-semibold">
+            Modernized Text Editor
+          </h2>
           <div class="glass-badge-accent">
             {{ hasTextLayer ? 'Text Layer Selected' : 'No Text Layer' }}
           </div>
@@ -55,12 +60,12 @@ onMounted(() => {
 
         <!-- Modular Components Demo -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
           <!-- Individual Components -->
           <div class="glass-panel rounded-2xl p-6">
-            <h3 class="text-lg font-medium mb-4">Modular Components</h3>
+            <h3 class="text-lg font-medium mb-4">
+              Modular Components
+            </h3>
             <div class="space-y-4">
-              
               <div>
                 <label class="block text-sm text-white/70 mb-2">Font Selector</label>
                 <FontSelector />
@@ -85,13 +90,14 @@ onMounted(() => {
                 <label class="block text-sm text-white/70 mb-2">Text Presets</label>
                 <TextPresets />
               </div>
-              
             </div>
           </div>
 
           <!-- Live Preview -->
           <div class="glass-panel rounded-2xl p-6">
-            <h3 class="text-lg font-medium mb-4">Live Preview</h3>
+            <h3 class="text-lg font-medium mb-4">
+              Live Preview
+            </h3>
             <div class="glass-card p-6 min-h-[300px]">
               <div 
                 class="text-white transition-all duration-300"
@@ -116,16 +122,18 @@ onMounted(() => {
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- Architecture Overview -->
         <div class="glass-panel rounded-2xl p-6">
-          <h3 class="text-lg font-medium mb-4">Architecture Improvements</h3>
+          <h3 class="text-lg font-medium mb-4">
+            Architecture Improvements
+          </h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
             <div class="space-y-3">
-              <h4 class="font-medium text-violet-300">🧩 Modular Design</h4>
+              <h4 class="font-medium text-violet-300">
+                🧩 Modular Design
+              </h4>
               <ul class="space-y-1 text-sm text-white/70">
                 <li>• Composable-based state management</li>
                 <li>• Focused, reusable components</li>
@@ -135,7 +143,9 @@ onMounted(() => {
             </div>
 
             <div class="space-y-3">
-              <h4 class="font-medium text-cyan-300">⚡ Modern Features</h4>
+              <h4 class="font-medium text-cyan-300">
+                ⚡ Modern Features
+              </h4>
               <ul class="space-y-1 text-sm text-white/70">
                 <li>• Vue 3 Composition API</li>
                 <li>• TypeScript type safety</li>
@@ -145,7 +155,9 @@ onMounted(() => {
             </div>
 
             <div class="space-y-3">
-              <h4 class="font-medium text-emerald-300">🚀 Enhanced UX</h4>
+              <h4 class="font-medium text-emerald-300">
+                🚀 Enhanced UX
+              </h4>
               <ul class="space-y-1 text-sm text-white/70">
                 <li>• Instant visual feedback</li>
                 <li>• Smart font loading</li>
@@ -153,44 +165,74 @@ onMounted(() => {
                 <li>• Advanced typography controls</li>
               </ul>
             </div>
-
           </div>
         </div>
 
         <!-- Component Structure -->
         <div class="glass-panel rounded-2xl p-6">
-          <h3 class="text-lg font-medium mb-4">Component Structure</h3>
+          <h3 class="text-lg font-medium mb-4">
+            Component Structure
+          </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
             <div>
-              <h4 class="font-medium mb-3 text-white/80">Core Components</h4>
+              <h4 class="font-medium mb-3 text-white/80">
+                Core Components
+              </h4>
               <div class="space-y-2 text-sm font-mono">
-                <div class="text-violet-300">TextEditorToolbar.vue</div>
-                <div class="ml-4 text-white/60">├── FontSelector.vue</div>
-                <div class="ml-4 text-white/60">├── FontSizeControl.vue</div>
-                <div class="ml-4 text-white/60">├── TextFormatControls.vue</div>
-                <div class="ml-4 text-white/60">├── TextAlignmentControls.vue</div>
-                <div class="ml-4 text-white/60">├── ColorControls.vue</div>
-                <div class="ml-4 text-white/60">├── TextPresets.vue</div>
-                <div class="ml-4 text-white/60">└── AdvancedTypographyPanel.vue</div>
+                <div class="text-violet-300">
+                  TextEditorToolbar.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── FontSelector.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── FontSizeControl.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── TextFormatControls.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── TextAlignmentControls.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── ColorControls.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── TextPresets.vue
+                </div>
+                <div class="ml-4 text-white/60">
+                  └── AdvancedTypographyPanel.vue
+                </div>
               </div>
             </div>
 
             <div>
-              <h4 class="font-medium mb-3 text-white/80">State Management</h4>
+              <h4 class="font-medium mb-3 text-white/80">
+                State Management
+              </h4>
               <div class="space-y-2 text-sm font-mono">
-                <div class="text-cyan-300">useTypography.ts</div>
-                <div class="ml-4 text-white/60">├── Centralized state</div>
-                <div class="ml-4 text-white/60">├── Font loading</div>
-                <div class="ml-4 text-white/60">├── Format application</div>
-                <div class="ml-4 text-white/60">├── Keyboard shortcuts</div>
-                <div class="ml-4 text-white/60">└── Layer integration</div>
+                <div class="text-cyan-300">
+                  useTypography.ts
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── Centralized state
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── Font loading
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── Format application
+                </div>
+                <div class="ml-4 text-white/60">
+                  ├── Keyboard shortcuts
+                </div>
+                <div class="ml-4 text-white/60">
+                  └── Layer integration
+                </div>
               </div>
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   </div>

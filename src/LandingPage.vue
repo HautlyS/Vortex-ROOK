@@ -17,7 +17,10 @@ const features = [
     <!-- Animated background -->
     <div class="absolute inset-0 bg-mesh-gradient opacity-60" />
     <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-violet/20 rounded-full blur-[120px] animate-glow-breathe" />
-    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-fuchsia/15 rounded-full blur-[100px] animate-glow-breathe" style="animation-delay: 2s" />
+    <div
+      class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-fuchsia/15 rounded-full blur-[100px] animate-glow-breathe"
+      style="animation-delay: 2s"
+    />
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-cyan/10 rounded-full blur-[150px] animate-float-slow" />
 
     <!-- Content -->
@@ -39,31 +42,50 @@ const features = [
 
       <!-- CTA Button -->
       <button
+        class="group relative mb-16 animate-fade-up"
+        style="animation-delay: 0.2s"
         @click="emit('launch')"
         @mouseenter="isHovering = true"
         @mouseleave="isHovering = false"
-        class="group relative mb-16 animate-fade-up"
-        style="animation-delay: 0.2s"
       >
         <div class="absolute inset-0 bg-gradient-to-r from-accent-violet to-accent-fuchsia rounded-2xl blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
         <div class="relative px-10 py-5 bg-gradient-to-r from-accent-violet to-accent-fuchsia rounded-2xl font-semibold text-lg text-white shadow-glow-lg hover:shadow-glow-xl transition-all duration-300 hover:scale-105 flex items-center gap-3">
           <span>Open Online App</span>
-          <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          <svg
+            class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
           </svg>
         </div>
       </button>
 
       <!-- Features Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl w-full animate-fade-up" style="animation-delay: 0.4s">
+      <div
+        class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl w-full animate-fade-up"
+        style="animation-delay: 0.4s"
+      >
         <div
           v-for="(feature, i) in features"
           :key="i"
           class="group p-5 rounded-2xl bg-glass-light backdrop-blur-xl border border-glass-border hover:border-accent-violet/30 hover:bg-glass-medium transition-all duration-300"
         >
-          <div class="text-3xl mb-3">{{ feature.icon }}</div>
-          <h3 class="font-semibold text-white/90 mb-1">{{ feature.title }}</h3>
-          <p class="text-sm text-white/50">{{ feature.desc }}</p>
+          <div class="text-3xl mb-3">
+            {{ feature.icon }}
+          </div>
+          <h3 class="font-semibold text-white/90 mb-1">
+            {{ feature.title }}
+          </h3>
+          <p class="text-sm text-white/50">
+            {{ feature.desc }}
+          </p>
         </div>
       </div>
 

@@ -192,18 +192,29 @@
 </script>
 
 <template>
-  <BackgroundTexture variant="crosshatch" :opacity="0.15" class="flex h-full flex-col">
+  <BackgroundTexture
+    variant="crosshatch"
+    :opacity="0.15"
+    class="flex h-full flex-col"
+  >
     <!-- Header -->
     <div
       class="flex items-center justify-between px-3 md:px-4 py-2.5 md:py-3 border-b border-white/[0.06]"
     >
-      <h2 class="text-xs font-semibold uppercase tracking-wider text-white/40">Properties</h2>
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-white/40">
+        Properties
+      </h2>
       <button
         v-if="isMobile"
-        @click="closePanel"
         class="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/40 hover:text-white"
+        @click="closePanel"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -222,7 +233,12 @@
         class="flex flex-col items-center justify-center h-full px-6 text-center"
       >
         <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-400/15 to-pink-400/10 flex items-center justify-center mb-4 ring-1 ring-violet-400/20 shadow-[0_0_30px_rgba(167,139,250,0.1)]">
-          <svg class="h-8 w-8 text-violet-300/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            class="h-8 w-8 text-violet-300/60"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -241,7 +257,12 @@
         class="flex flex-col items-center justify-center h-full px-6 text-center"
       >
         <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-400/15 to-pink-400/10 flex items-center justify-center mb-4 ring-1 ring-fuchsia-400/20 shadow-[0_0_30px_rgba(232,121,249,0.1)]">
-          <svg class="h-8 w-8 text-fuchsia-300/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            class="h-8 w-8 text-fuchsia-300/60"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -255,7 +276,10 @@
       </div>
 
       <!-- Single Layer Properties -->
-      <div v-else-if="selectedLayer" class="divide-y divide-white/[0.04]">
+      <div
+        v-else-if="selectedLayer"
+        class="divide-y divide-white/[0.04]"
+      >
         <!-- Watermark Section (if watermark type or enable for any image) -->
         <div
           v-if="selectedLayer.type === 'watermark' || selectedLayer.type === 'image'"
@@ -266,43 +290,45 @@
 
         <!-- Position & Size -->
         <div class="p-4">
-          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">Transform</h3>
+          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">
+            Transform
+          </h3>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="mb-1.5 block text-[10px] text-white/30 uppercase">X</label>
               <input
                 type="number"
                 :value="Math.round(selectedLayer.bounds.x)"
-                @input="updateBounds('x', Number(($event.target as HTMLInputElement).value))"
                 class="glass-input text-sm"
-              />
+                @input="updateBounds('x', Number(($event.target as HTMLInputElement).value))"
+              >
             </div>
             <div>
               <label class="mb-1.5 block text-[10px] text-white/30 uppercase">Y</label>
               <input
                 type="number"
                 :value="Math.round(selectedLayer.bounds.y)"
-                @input="updateBounds('y', Number(($event.target as HTMLInputElement).value))"
                 class="glass-input text-sm"
-              />
+                @input="updateBounds('y', Number(($event.target as HTMLInputElement).value))"
+              >
             </div>
             <div>
               <label class="mb-1.5 block text-[10px] text-white/30 uppercase">W</label>
               <input
                 type="number"
                 :value="Math.round(selectedLayer.bounds.width)"
-                @input="updateBounds('width', Number(($event.target as HTMLInputElement).value))"
                 class="glass-input text-sm"
-              />
+                @input="updateBounds('width', Number(($event.target as HTMLInputElement).value))"
+              >
             </div>
             <div>
               <label class="mb-1.5 block text-[10px] text-white/30 uppercase">H</label>
               <input
                 type="number"
                 :value="Math.round(selectedLayer.bounds.height)"
-                @input="updateBounds('height', Number(($event.target as HTMLInputElement).value))"
                 class="glass-input text-sm"
-              />
+                @input="updateBounds('height', Number(($event.target as HTMLInputElement).value))"
+              >
             </div>
           </div>
         </div>
@@ -315,9 +341,7 @@
           <div>
             <div class="flex items-center justify-between mb-1">
               <label class="text-[10px] text-white/30 uppercase">Opacity</label>
-              <span class="text-[10px] text-white/40 tabular-nums"
-                >{{ Math.round(selectedLayer.opacity * 100) }}%</span
-              >
+              <span class="text-[10px] text-white/40 tabular-nums">{{ Math.round(selectedLayer.opacity * 100) }}%</span>
             </div>
             <ElasticSlider
               :default-value="Math.round(selectedLayer.opacity * 100)"
@@ -326,22 +350,36 @@
               class="!w-full !gap-2 [&>div:first-child]:!gap-2 [&_p]:hidden [&_.bg-gray-400]:!bg-white/10 [&_.bg-\[\#27FF64\]]:!bg-gradient-to-r [&_.bg-\[\#27FF64\]]:!from-violet-500 [&_.bg-\[\#27FF64\]]:!to-fuchsia-500"
               @update:model-value="updateProperty('opacity', $event / 100)"
             >
-              <template #left-icon><span class="text-white/30 text-xs">0</span></template>
-              <template #right-icon><span class="text-white/30 text-xs">100</span></template>
+              <template #left-icon>
+                <span class="text-white/30 text-xs">0</span>
+              </template>
+              <template #right-icon>
+                <span class="text-white/30 text-xs">100</span>
+              </template>
             </ElasticSlider>
           </div>
         </div>
 
         <!-- Image Properties -->
-        <div v-if="selectedLayer.type === 'image'" class="p-4">
-          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">Image</h3>
+        <div
+          v-if="selectedLayer.type === 'image'"
+          class="p-4"
+        >
+          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">
+            Image
+          </h3>
 
           <div class="flex gap-2 mb-4">
             <button
-              @click="replaceImage"
               class="glass-btn flex-1 text-xs flex items-center justify-center gap-1.5"
+              @click="replaceImage"
             >
-              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -352,10 +390,15 @@
               Replace
             </button>
             <button
-              @click="exportImage"
               class="glass-btn flex-1 text-xs flex items-center justify-center gap-1.5"
+              @click="exportImage"
             >
-              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -372,8 +415,8 @@
             <div class="flex items-center justify-between">
               <span class="text-[10px] text-white/30 uppercase">Filters</span>
               <button
-                @click="resetFilters"
                 class="text-[10px] text-violet-400 hover:text-violet-300 transition-colors"
+                @click="resetFilters"
               >
                 Reset
               </button>
@@ -388,8 +431,12 @@
                 class="slider-style"
                 @update:model-value="imageFilters.brightness = $event / 100; applyFilters()"
               >
-                <template #left-icon><span class="text-white/30 text-[10px]">-</span></template>
-                <template #right-icon><span class="text-white/30 text-[10px]">+</span></template>
+                <template #left-icon>
+                  <span class="text-white/30 text-[10px]">-</span>
+                </template>
+                <template #right-icon>
+                  <span class="text-white/30 text-[10px]">+</span>
+                </template>
               </ElasticSlider>
             </div>
 
@@ -402,8 +449,12 @@
                 class="slider-style"
                 @update:model-value="imageFilters.contrast = $event / 100; applyFilters()"
               >
-                <template #left-icon><span class="text-white/30 text-[10px]">-</span></template>
-                <template #right-icon><span class="text-white/30 text-[10px]">+</span></template>
+                <template #left-icon>
+                  <span class="text-white/30 text-[10px]">-</span>
+                </template>
+                <template #right-icon>
+                  <span class="text-white/30 text-[10px]">+</span>
+                </template>
               </ElasticSlider>
             </div>
 
@@ -416,8 +467,12 @@
                 class="slider-style"
                 @update:model-value="imageFilters.saturation = $event / 100; applyFilters()"
               >
-                <template #left-icon><span class="text-white/30 text-[10px]">-</span></template>
-                <template #right-icon><span class="text-white/30 text-[10px]">+</span></template>
+                <template #left-icon>
+                  <span class="text-white/30 text-[10px]">-</span>
+                </template>
+                <template #right-icon>
+                  <span class="text-white/30 text-[10px]">+</span>
+                </template>
               </ElasticSlider>
             </div>
           </div>
@@ -425,12 +480,13 @@
 
         <!-- Layer Role -->
         <div class="p-4">
-          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">Role</h3>
+          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">
+            Role
+          </h3>
           <div class="flex flex-wrap gap-1.5">
             <button
               v-for="opt in roleOptions"
               :key="opt.value"
-              @click="setRole(opt.value)"
               :class="[
                 'rounded-lg px-3 py-1.5 text-xs transition-all duration-200',
                 selectedLayer.role === opt.value
@@ -439,16 +495,22 @@
                     : 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
                   : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:bg-white/[0.06] hover:text-white/70'
               ]"
+              @click="setRole(opt.value)"
             >
               {{ opt.label }}
             </button>
           </div>
           <button
             v-if="selectedLayer.role === 'header' || selectedLayer.role === 'footer'"
-            @click="openApplyHFDialog"
             class="mt-3 w-full glass-btn text-xs flex items-center justify-center gap-1.5 !bg-fuchsia-500/10 !border-fuchsia-500/20 text-fuchsia-300 hover:!bg-fuchsia-500/20"
+            @click="openApplyHFDialog"
           >
-            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="h-3.5 w-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -461,7 +523,10 @@
         </div>
 
         <!-- Text Properties -->
-        <div v-if="selectedLayer.type === 'text'" class="p-4">
+        <div
+          v-if="selectedLayer.type === 'text'"
+          class="p-4"
+        >
           <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">
             Typography
           </h3>
@@ -479,11 +544,11 @@
                 <input
                   type="number"
                   :value="selectedLayer.fontSize ?? 16"
+                  class="glass-input text-sm"
                   @input="
                     updateProperty('fontSize', Number(($event.target as HTMLInputElement).value))
                   "
-                  class="glass-input text-sm"
-                />
+                >
               </div>
               <div>
                 <label class="mb-1.5 block text-[10px] text-white/30 uppercase">Color</label>
@@ -491,14 +556,14 @@
                   <input
                     type="color"
                     :value="selectedLayer.color ?? '#ffffff'"
-                    @input="updateProperty('color', ($event.target as HTMLInputElement).value)"
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
+                    @input="updateProperty('color', ($event.target as HTMLInputElement).value)"
+                  >
                   <div class="glass-input h-[38px] flex items-center gap-2">
                     <div
                       class="w-5 h-5 rounded-md border border-white/20"
                       :style="{ backgroundColor: selectedLayer.color ?? '#ffffff' }"
-                    ></div>
+                    />
                     <span class="text-xs text-white/50 uppercase">{{
                       (selectedLayer.color ?? '#ffffff').slice(1)
                     }}</span>
@@ -512,15 +577,20 @@
                 <button
                   v-for="align in textAlignOptions"
                   :key="align.value"
-                  @click="updateProperty('textAlign', align.value)"
                   :class="[
                     'flex h-9 flex-1 items-center justify-center rounded-xl border transition-all duration-200',
                     selectedLayer.textAlign === align.value
                       ? 'border-violet-500/40 bg-violet-500/10 text-violet-300'
                       : 'border-white/[0.06] bg-white/[0.03] text-white/40 hover:bg-white/[0.06] hover:text-white/60'
                   ]"
+                  @click="updateProperty('textAlign', align.value)"
                 >
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -535,8 +605,13 @@
         </div>
 
         <!-- Shape Properties -->
-        <div v-if="selectedLayer.type === 'shape'" class="p-4">
-          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">Shape</h3>
+        <div
+          v-if="selectedLayer.type === 'shape'"
+          class="p-4"
+        >
+          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">
+            Shape
+          </h3>
           <div class="space-y-3">
             <div class="grid grid-cols-2 gap-2">
               <div>
@@ -545,14 +620,14 @@
                   <input
                     type="color"
                     :value="selectedLayer.fillColor ?? '#8b5cf6'"
-                    @input="updateProperty('fillColor', ($event.target as HTMLInputElement).value)"
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
+                    @input="updateProperty('fillColor', ($event.target as HTMLInputElement).value)"
+                  >
                   <div class="glass-input h-[38px] flex items-center gap-2">
                     <div
                       class="w-5 h-5 rounded-md border border-white/20"
                       :style="{ backgroundColor: selectedLayer.fillColor ?? '#8b5cf6' }"
-                    ></div>
+                    />
                   </div>
                 </div>
               </div>
@@ -562,16 +637,16 @@
                   <input
                     type="color"
                     :value="selectedLayer.strokeColor ?? '#ffffff'"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     @input="
                       updateProperty('strokeColor', ($event.target as HTMLInputElement).value)
                     "
-                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
+                  >
                   <div class="glass-input h-[38px] flex items-center gap-2">
                     <div
                       class="w-5 h-5 rounded-md border border-white/20"
                       :style="{ backgroundColor: selectedLayer.strokeColor ?? '#ffffff' }"
-                    ></div>
+                    />
                   </div>
                 </div>
               </div>
@@ -582,18 +657,20 @@
                 type="number"
                 min="0"
                 :value="selectedLayer.strokeWidth ?? 1"
+                class="glass-input text-sm"
                 @input="
                   updateProperty('strokeWidth', Number(($event.target as HTMLInputElement).value))
                 "
-                class="glass-input text-sm"
-              />
+              >
             </div>
           </div>
         </div>
 
         <!-- Layer Info -->
         <div class="p-4">
-          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">Info</h3>
+          <h3 class="mb-3 text-xs font-medium text-white/40 uppercase tracking-wider">
+            Info
+          </h3>
           <div class="space-y-2 text-xs">
             <div class="flex justify-between">
               <span class="text-white/30">Type</span>
@@ -640,7 +717,7 @@
                   min="1"
                   :max="store.totalPages"
                   class="glass-input flex-1 text-sm"
-                />
+                >
               </div>
               <div class="flex items-center gap-3">
                 <label class="w-12 text-xs text-white/40">To</label>
@@ -650,18 +727,28 @@
                   :min="hfStartPage"
                   :max="store.totalPages"
                   class="glass-input flex-1 text-sm"
-                />
+                >
               </div>
               <button
-                @click="hfStartPage = 1; hfEndPage = store.totalPages"
                 class="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+                @click="hfStartPage = 1; hfEndPage = store.totalPages"
               >
                 Apply to all pages
               </button>
             </div>
             <div class="flex justify-end gap-2">
-              <button @click="showHFDialog = false" class="glass-btn text-sm">Cancel</button>
-              <button @click="applyHeaderFooter" class="btn-accent text-sm !py-2">Apply</button>
+              <button
+                class="glass-btn text-sm"
+                @click="showHFDialog = false"
+              >
+                Cancel
+              </button>
+              <button
+                class="btn-accent text-sm !py-2"
+                @click="applyHeaderFooter"
+              >
+                Apply
+              </button>
             </div>
           </div>
         </div>

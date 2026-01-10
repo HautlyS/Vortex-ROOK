@@ -273,39 +273,82 @@ watch(() => props.page, () => { panOffset.value = { x: 0, y: 0 } })
     <div class="absolute bottom-4 right-4 flex items-center gap-2">
       <div class="glass-panel rounded-xl flex overflow-hidden">
         <button
-          @click="setFitMode('fit')"
           :class="['px-3 py-2 text-xs transition-colors', fitMode === 'fit' ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
           title="Fit Page"
+          @click="setFitMode('fit')"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+            />
           </svg>
         </button>
         <button
-          @click="setFitMode('width')"
           :class="['px-3 py-2 text-xs transition-colors', fitMode === 'width' ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
           title="Fit Width"
+          @click="setFitMode('width')"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 12h16m-16 0l4-4m-4 4l4 4m12-4l-4-4m4 4l-4 4" />
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M4 12h16m-16 0l4-4m-4 4l4 4m12-4l-4-4m4 4l-4 4"
+            />
           </svg>
         </button>
         <button
-          @click="setFitMode('actual')"
           :class="['px-3 py-2 text-xs transition-colors', fitMode === 'actual' ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
           title="Actual Size (100%)"
-        >1:1</button>
+          @click="setFitMode('actual')"
+        >
+          1:1
+        </button>
       </div>
 
       <div class="glass-panel rounded-xl flex overflow-hidden">
-        <button @click="zoomOut" class="px-3 py-2 text-white/50 hover:text-white hover:bg-white/10 transition-colors" title="Zoom Out">−</button>
-        <button @click="resetZoom" class="px-3 py-2 text-xs text-white/50 hover:text-white hover:bg-white/10 transition-colors border-x border-white/10" title="Reset Zoom">Reset</button>
-        <button @click="zoomIn" class="px-3 py-2 text-white/50 hover:text-white hover:bg-white/10 transition-colors" title="Zoom In">+</button>
+        <button
+          class="px-3 py-2 text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+          title="Zoom Out"
+          @click="zoomOut"
+        >
+          −
+        </button>
+        <button
+          class="px-3 py-2 text-xs text-white/50 hover:text-white hover:bg-white/10 transition-colors border-x border-white/10"
+          title="Reset Zoom"
+          @click="resetZoom"
+        >
+          Reset
+        </button>
+        <button
+          class="px-3 py-2 text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+          title="Zoom In"
+          @click="zoomIn"
+        >
+          +
+        </button>
       </div>
     </div>
 
     <!-- Help Hint -->
-    <div v-if="!isMobile" class="absolute top-4 right-4 text-xs text-white/30">
+    <div
+      v-if="!isMobile"
+      class="absolute top-4 right-4 text-xs text-white/30"
+    >
       Scroll to zoom • Drag empty area to pan
     </div>
   </div>

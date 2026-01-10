@@ -249,7 +249,9 @@ onUnmounted(() => {
         v-if="!isEditing" 
         class="w-full h-full overflow-hidden whitespace-pre-wrap break-words"
         :style="{ textAlign: style.textAlign }"
-      >{{ layer.content }}</div>
+      >
+        {{ layer.content }}
+      </div>
       <textarea
         v-else
         ref="editableRef"
@@ -273,10 +275,28 @@ onUnmounted(() => {
     <!-- Image Layer -->
     <template v-else-if="layer.type === 'image'">
       <!-- Loading state -->
-      <div v-if="imageLoading" class="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center">
-        <svg class="w-6 h-6 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+      <div
+        v-if="imageLoading"
+        class="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center"
+      >
+        <svg
+          class="w-6 h-6 text-gray-300 animate-spin"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
         </svg>
       </div>
       <!-- Loaded image -->
@@ -286,14 +306,24 @@ onUnmounted(() => {
         class="w-full h-full object-contain pointer-events-none"
         draggable="false"
         @error="onImageError"
-      />
+      >
       <!-- Image Error/Missing Fallback -->
       <div
         v-else
         class="w-full h-full bg-gray-200 flex items-center justify-center"
       >
-        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <svg
+          class="w-8 h-8 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
         </svg>
       </div>
     </template>
@@ -348,90 +378,119 @@ onUnmounted(() => {
           <!-- Font Picker -->
           <FontPicker
             :model-value="layer.fontFamily || 'Arial'"
-            @update:model-value="updateFont"
             class="!w-32"
+            @update:model-value="updateFont"
           />
           
           <!-- Font Size -->
           <div class="flex items-center bg-white/5 rounded-lg">
             <button 
-              @click="updateFontSize((layer.fontSize || 12) - 1)"
               class="px-1.5 py-1 text-white/50 hover:text-white"
               tabindex="-1"
-            >−</button>
+              @click="updateFontSize((layer.fontSize || 12) - 1)"
+            >
+              −
+            </button>
             <input
               type="number"
               :value="layer.fontSize || 12"
-              @change="updateFontSize(Number(($event.target as HTMLInputElement).value))"
               class="w-10 px-1 py-1 text-xs text-center bg-transparent border-0 text-white focus:outline-none"
-              min="6" max="200"
+              min="6"
+              max="200"
               tabindex="-1"
-            />
+              @change="updateFontSize(Number(($event.target as HTMLInputElement).value))"
+            >
             <button 
-              @click="updateFontSize((layer.fontSize || 12) + 1)"
               class="px-1.5 py-1 text-white/50 hover:text-white"
               tabindex="-1"
-            >+</button>
+              @click="updateFontSize((layer.fontSize || 12) + 1)"
+            >
+              +
+            </button>
           </div>
 
           <div class="w-px h-6 bg-white/10" />
 
           <!-- Bold -->
           <button 
-            @click="toggleBold"
             :class="['p-1.5 rounded-lg transition-colors', isBold ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
             title="Bold"
             tabindex="-1"
+            @click="toggleBold"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            ><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z" /></svg>
           </button>
 
           <!-- Italic -->
           <button 
-            @click="toggleItalic"
             :class="['p-1.5 rounded-lg transition-colors', isItalic ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
             title="Italic"
             tabindex="-1"
+            @click="toggleItalic"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            ><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z" /></svg>
           </button>
 
           <!-- Underline -->
           <button 
-            @click="toggleUnderline"
             :class="['p-1.5 rounded-lg transition-colors', isUnderline ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
             title="Underline"
             tabindex="-1"
+            @click="toggleUnderline"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            ><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z" /></svg>
           </button>
 
           <div class="w-px h-6 bg-white/10" />
 
           <!-- Alignment -->
           <button 
-            @click="setAlign('left')"
             :class="['p-1.5 rounded-lg transition-colors', layer.textAlign === 'left' || !layer.textAlign ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
             title="Align Left"
             tabindex="-1"
+            @click="setAlign('left')"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            ><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z" /></svg>
           </button>
           <button 
-            @click="setAlign('center')"
             :class="['p-1.5 rounded-lg transition-colors', layer.textAlign === 'center' ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
             title="Align Center"
             tabindex="-1"
+            @click="setAlign('center')"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg>
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            ><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z" /></svg>
           </button>
           <button 
-            @click="setAlign('right')"
             :class="['p-1.5 rounded-lg transition-colors', layer.textAlign === 'right' ? 'bg-violet-500/30 text-violet-300' : 'text-white/50 hover:text-white hover:bg-white/10']"
             title="Align Right"
             tabindex="-1"
+            @click="setAlign('right')"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg>
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            ><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z" /></svg>
           </button>
 
           <div class="w-px h-6 bg-white/10" />
@@ -441,10 +500,10 @@ onUnmounted(() => {
             <input
               type="color"
               :value="layer.color || '#000000'"
-              @input="updateColor(($event.target as HTMLInputElement).value)"
               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               tabindex="-1"
-            />
+              @input="updateColor(($event.target as HTMLInputElement).value)"
+            >
             <div 
               class="w-7 h-7 rounded-lg border-2 border-white/20 cursor-pointer"
               :style="{ backgroundColor: layer.color || '#000000' }"
@@ -453,10 +512,12 @@ onUnmounted(() => {
 
           <!-- Done -->
           <button 
-            @click="closeEdit" 
-            class="ml-1 px-2.5 py-1.5 text-xs rounded-lg bg-violet-500 text-white hover:bg-violet-600 font-medium"
+            class="ml-1 px-2.5 py-1.5 text-xs rounded-lg bg-violet-500 text-white hover:bg-violet-600 font-medium" 
             tabindex="-1"
-          >Done</button>
+            @click="closeEdit"
+          >
+            Done
+          </button>
         </div>
       </Transition>
     </Teleport>

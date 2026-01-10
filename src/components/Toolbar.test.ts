@@ -50,14 +50,13 @@ describe('Toolbar.vue', () => {
     expect(screen.getByTitle('Add Watermark')).not.toBeDisabled()
   })
 
-  it('calls importDocument when import button is clicked', async () => {
-    const documentStore = useDocumentStore()
-    const importSpy = vi.spyOn(documentStore, 'importDocument').mockResolvedValue(true)
+  it('shows import options dialog when import button is clicked', async () => {
     render(Toolbar)
 
     await fireEvent.click(screen.getByTitle('Import (Ctrl+O)'))
 
-    expect(importSpy).toHaveBeenCalled()
+    // Dialog should be shown (check for dialog heading)
+    expect(screen.getByText('📥 Import Options')).toBeInTheDocument()
   })
 
   it('calls undo when undo button is clicked', async () => {

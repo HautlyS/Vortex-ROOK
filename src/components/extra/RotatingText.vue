@@ -220,7 +220,10 @@ onUnmounted(() => {
       {{ texts[currentTextIndex] }}
     </span>
 
-    <AnimatePresence :mode="animatePresenceMode" :initial="animatePresenceInitial">
+    <AnimatePresence
+      :mode="animatePresenceMode"
+      :initial="animatePresenceInitial"
+    >
       <Motion
         :key="currentTextIndex"
         tag="span"
@@ -228,7 +231,11 @@ onUnmounted(() => {
         aria-hidden="true"
         layout
       >
-        <span v-for="(wordObj, wordIndex) in elements" :key="wordIndex" :class="cn('inline-flex', splitLevelClassName)">
+        <span
+          v-for="(wordObj, wordIndex) in elements"
+          :key="wordIndex"
+          :class="cn('inline-flex', splitLevelClassName)"
+        >
           <Motion
             v-for="(char, charIndex) in wordObj.characters"
             :key="charIndex"
@@ -247,7 +254,10 @@ onUnmounted(() => {
           >
             {{ char }}
           </Motion>
-          <span v-if="wordObj.needsSpace" class="whitespace-pre"></span>
+          <span
+            v-if="wordObj.needsSpace"
+            class="whitespace-pre"
+          />
         </span>
       </Motion>
     </AnimatePresence>

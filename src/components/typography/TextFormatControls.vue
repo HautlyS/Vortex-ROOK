@@ -15,45 +15,45 @@ function toggleItalic() {
 <template>
   <div class="flex items-center gap-1">
     <button
-      @click="toggleBold"
       :class="[
         'glass-btn-icon font-bold text-sm',
         state.fontWeight >= 600 && 'bg-violet-500/20 text-violet-300 shadow-glow-sm'
       ]"
       title="Bold (Ctrl+B)"
+      @click="toggleBold"
     >
       B
     </button>
     
     <button
-      @click="toggleItalic"
       :class="[
         'glass-btn-icon italic text-sm',
         state.fontStyle === 'italic' && 'bg-violet-500/20 text-violet-300 shadow-glow-sm'
       ]"
       title="Italic (Ctrl+I)"
+      @click="toggleItalic"
     >
       I
     </button>
     
     <button
-      @click="toggleDecoration('underline')"
       :class="[
         'glass-btn-icon underline text-sm',
         state.textDecoration.has('underline') && 'bg-violet-500/20 text-violet-300 shadow-glow-sm'
       ]"
       title="Underline (Ctrl+U)"
+      @click="toggleDecoration('underline')"
     >
       U
     </button>
     
     <button
-      @click="toggleDecoration('line-through')"
       :class="[
         'glass-btn-icon line-through text-sm',
         state.textDecoration.has('line-through') && 'bg-violet-500/20 text-violet-300 shadow-glow-sm'
       ]"
       title="Strikethrough"
+      @click="toggleDecoration('line-through')"
     >
       S
     </button>

@@ -5,6 +5,7 @@ import type {
   ImpositionOptions,
   ImpositionResult,
   ImposedPage,
+  ImpositionLayout,
   PaperSize,
 } from './types';
 
@@ -62,22 +63,36 @@ export function impose2Up(totalPages: number, options: ImpositionOptions): Impos
 /**
  * Booklet imposition: Saddle-stitch signature folding
  * Pages arranged for folding in half and stapling at spine
+ * 
+ * For an 8-page booklet (pages 1-8, 0-indexed as 0-7):
+ * - Sheet 0 Front: [8, 1] → indices [7, 0]
+ * - Sheet 0 Back:  [2, 7] → indices [1, 6]
+ * - Sheet 1 Front: [6, 3] → indices [5, 2]
+ * - Sheet 1 Back:  [4, 5] → indices [3, 4]
+ * 
+ * Formula (0-indexed, N pages, sheet s):
+ * - Front: [N-1-2s, 2s]
+ * - Back:  [2s+1, N-2-2s]
+ * 
+ * Creep: Inner sheets need slight inward shift to compensate for paper thickness
  */
 export function imposeBooklet(totalPages: number, options: ImpositionOptions): ImpositionResult {
   const paper = getPaperSize(options);
   const { slotW, slotH, startX, startY } = getSlotArea(paper, options.margins, 2, 1);
   
-  // Round up to multiple of 4 for booklet
+  // Round up to multiple of 4 for booklet (each sheet = 4 pages)
   const paddedPages = Math.ceil(totalPages / 4) * 4;
+  const numSheets = paddedPages / 4;
   const sheets: ImposedPage[] = [];
-  const creep = options.creepAdjustment || 0;
   
-  // Generate booklet page order
-  // For a booklet: sheet 1 front = [last, 1], back = [2, last-1], etc.
-  for (let sheet = 0; sheet < paddedPages / 4; sheet++) {
-    const creepOffset = sheet * creep;
+  // Creep: mm per sheet, converted to points (1mm ≈ 2.83pt)
+  const creepPerSheet = (options.creepAdjustment || 0) * 2.83;
+  
+  for (let sheet = 0; sheet < numSheets; sheet++) {
+    // Creep increases for inner sheets (sheet 0 = outermost)
+    const creepOffset = sheet * creepPerSheet;
     
-    // Front side: [paddedPages - sheet*2, sheet*2 + 1]
+    // Front side: [last - 2*sheet, 2*sheet] (0-indexed)
     const frontLeft = paddedPages - 1 - sheet * 2;
     const frontRight = sheet * 2;
     
@@ -87,16 +102,24 @@ export function imposeBooklet(totalPages: number, options: ImpositionOptions): I
       slots: [
         { 
           sourcePageIndex: frontLeft < totalPages ? frontLeft : null, 
-          x: startX - creepOffset, y: startY, width: slotW, height: slotH, rotation: 0 
+          x: startX, 
+          y: startY, 
+          width: slotW - creepOffset, 
+          height: slotH, 
+          rotation: 0 
         },
         { 
           sourcePageIndex: frontRight < totalPages ? frontRight : null, 
-          x: startX + slotW + creepOffset, y: startY, width: slotW, height: slotH, rotation: 0 
+          x: startX + slotW + creepOffset, 
+          y: startY, 
+          width: slotW - creepOffset, 
+          height: slotH, 
+          rotation: 0 
         },
       ],
     });
     
-    // Back side: [sheet*2 + 2, paddedPages - sheet*2 - 1]
+    // Back side: [2*sheet + 1, last - 1 - 2*sheet] (0-indexed)
     const backLeft = sheet * 2 + 1;
     const backRight = paddedPages - 2 - sheet * 2;
     
@@ -106,17 +129,25 @@ export function imposeBooklet(totalPages: number, options: ImpositionOptions): I
       slots: [
         { 
           sourcePageIndex: backLeft < totalPages ? backLeft : null, 
-          x: startX + creepOffset, y: startY, width: slotW, height: slotH, rotation: 0 
+          x: startX + creepOffset, 
+          y: startY, 
+          width: slotW - creepOffset, 
+          height: slotH, 
+          rotation: 0 
         },
         { 
           sourcePageIndex: backRight < totalPages ? backRight : null, 
-          x: startX + slotW - creepOffset, y: startY, width: slotW, height: slotH, rotation: 0 
+          x: startX + slotW, 
+          y: startY, 
+          width: slotW - creepOffset, 
+          height: slotH, 
+          rotation: 0 
         },
       ],
     });
   }
   
-  return { sheets, totalSheets: paddedPages / 4, paperSize: paper, duplex: true };
+  return { sheets, totalSheets: numSheets, paperSize: paper, duplex: true };
 }
 
 /**
@@ -195,6 +226,62 @@ export function calculateImposition(totalPages: number, options: ImpositionOptio
 export function getImpositionDescription(result: ImpositionResult, _layout: string): string {
   const { totalSheets, duplex, paperSize } = result;
   const sizeStr = `${Math.round(paperSize.width)}×${Math.round(paperSize.height)}pt`;
-  const duplexStr = duplex ? ' (duplex)' : '';
-  return `${totalSheets} sheet${totalSheets !== 1 ? 's' : ''} @ ${sizeStr}${duplexStr}`;
+  const duplexStr = duplex ? ' (duplex/frente-verso)' : '';
+  return `${totalSheets} folha${totalSheets !== 1 ? 's' : ''} @ ${sizeStr}${duplexStr}`;
+}
+
+/**
+ * Get detailed booklet page order for preview
+ * Returns array of sheet descriptions showing which pages go where
+ */
+export function getBookletPageOrder(totalPages: number): string[] {
+  const paddedPages = Math.ceil(totalPages / 4) * 4;
+  const numSheets = paddedPages / 4;
+  const order: string[] = [];
+  
+  for (let sheet = 0; sheet < numSheets; sheet++) {
+    const frontLeft = paddedPages - sheet * 2;  // 1-indexed
+    const frontRight = sheet * 2 + 1;           // 1-indexed
+    const backLeft = sheet * 2 + 2;             // 1-indexed
+    const backRight = paddedPages - 1 - sheet * 2; // 1-indexed
+    
+    const fl = frontLeft <= totalPages ? frontLeft.toString() : '—';
+    const fr = frontRight <= totalPages ? frontRight.toString() : '—';
+    const bl = backLeft <= totalPages ? backLeft.toString() : '—';
+    const br = backRight <= totalPages ? backRight.toString() : '—';
+    
+    order.push(`Folha ${sheet + 1}: Frente [${fl} | ${fr}], Verso [${bl} | ${br}]`);
+  }
+  
+  return order;
+}
+
+/**
+ * Get folding instructions for the user
+ */
+export function getFoldingInstructions(layout: ImpositionLayout, totalSheets: number): string[] {
+  switch (layout) {
+    case 'booklet':
+      return [
+        '1. Imprima todas as folhas em frente e verso (duplex)',
+        '2. Empilhe as folhas na ordem (folha 1 em cima)',
+        '3. Dobre todas as folhas juntas ao meio',
+        '4. Grampeie na dobra (lombada) com 2 grampos',
+        `Total: ${totalSheets} folha${totalSheets > 1 ? 's' : ''} de papel`,
+      ];
+    case '2-up':
+      return [
+        '1. Imprima as folhas',
+        '2. Corte ao meio verticalmente',
+        '3. Empilhe na ordem',
+      ];
+    case '4-up':
+      return [
+        '1. Imprima as folhas',
+        '2. Corte em 4 partes (2×2)',
+        '3. Empilhe na ordem',
+      ];
+    default:
+      return ['Imprima e corte conforme necessário'];
+  }
 }

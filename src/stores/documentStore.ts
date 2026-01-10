@@ -8,11 +8,12 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import {
   importDocumentWithAnalysis,
+  importDocumentWithOptions,
   saveProject as bridgeSave,
   loadProject as bridgeLoad,
   isTauri
 } from '@/bridge'
-import type { BookProjectData as BridgeBookProject, PdfAnalysis } from '@/bridge'
+import type { BookProjectData as BridgeBookProject, PdfAnalysis, ImportOptions } from '@/bridge'
 import type {
   BookProjectData,
   PageData,
@@ -94,22 +95,44 @@ export const useDocumentStore = defineStore('document', () => {
    * Import a document with PDF analysis (works in both Tauri and Web)
    */
   async function importDocument(
+    optionsOrProgress?: ImportOptions | ((current: number, total: number, status: string) => void),
+    fileOrProgress?: { name: string; data: Uint8Array } | ((current: number, total: number, status: string) => void),
     onProgress?: (current: number, total: number, status: string) => void
   ): Promise<boolean> {
+    // Handle overloaded signature
+    let options: ImportOptions | undefined
+    let file: { name: string; data: Uint8Array } | undefined
+    let progressCallback: ((current: number, total: number, status: string) => void) | undefined
+    
+    if (typeof optionsOrProgress === 'function') {
+      progressCallback = optionsOrProgress
+    } else {
+      options = optionsOrProgress
+      if (typeof fileOrProgress === 'function') {
+        progressCallback = fileOrProgress
+      } else {
+        file = fileOrProgress
+        progressCallback = onProgress
+      }
+    }
+    
     isLoading.value = true
     error.value = null
     clearDocumentState()
 
     try {
-      const result = await importDocumentWithAnalysis(onProgress)
+      // Use options-based import if options provided, otherwise use default analysis import
+      const result = options 
+        ? await importDocumentWithOptions(options, file, progressCallback)
+        : await importDocumentWithAnalysis(progressCallback)
 
       if (result.success && result.data) {
-        document.value = transformToBookProject(result.data as unknown as DocumentData, 'Imported Document')
+        document.value = transformToBookProject(result.data as unknown as DocumentData, file?.name || 'Imported Document')
         currentPageIndex.value = 0
         sourceFile.value = {
           path: '',
           type: 'pdf',
-          name: 'Imported Document'
+          name: file?.name || 'Imported Document'
         }
         
         // Store PDF analysis if available

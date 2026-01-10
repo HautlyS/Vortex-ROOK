@@ -41,7 +41,7 @@ let invoke: InvokeFn | null = null;
 
 // Cache
 let fontCache: AllFonts | null = null;
-let loadedGoogleFonts = new Set<string>();
+const loadedGoogleFonts = new Set<string>();
 
 // Popular Google Fonts for web fallback
 const POPULAR_GOOGLE_FONTS: GoogleFont[] = [

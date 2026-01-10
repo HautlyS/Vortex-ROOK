@@ -1,5 +1,9 @@
 <template>
-  <component :is="tag" :class="['relative', className]" :style="containerStyle">
+  <component
+    :is="tag"
+    :class="['relative', className]"
+    :style="containerStyle"
+  >
     <div
       v-if="variant !== 'none'"
       class="pointer-events-none absolute inset-0"

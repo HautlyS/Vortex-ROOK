@@ -212,16 +212,21 @@ function getStatusColor(status: string) {
 <template>
   <div class="min-h-screen bg-dark-950 text-white p-6">
     <div class="max-w-6xl mx-auto space-y-8">
-      
       <!-- Header -->
       <div class="text-center space-y-3">
-        <h1 class="text-4xl font-bold text-gradient">Typography System Test Suite</h1>
-        <p class="text-white/60">Cross-Platform Compatibility Verification</p>
+        <h1 class="text-4xl font-bold text-gradient">
+          Typography System Test Suite
+        </h1>
+        <p class="text-white/60">
+          Cross-Platform Compatibility Verification
+        </p>
       </div>
 
       <!-- Platform Info -->
       <div class="glass-panel rounded-2xl p-6">
-        <h2 class="text-xl font-semibold mb-4">Platform Information</h2>
+        <h2 class="text-xl font-semibold mb-4">
+          Platform Information
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
             <span class="text-white/50">Platform:</span>
@@ -241,12 +246,12 @@ function getStatusColor(status: string) {
       <!-- Test Controls -->
       <div class="flex justify-center">
         <button
-          @click="runAllTests"
           :disabled="isRunningTests"
           :class="[
             'btn-accent px-8 py-3 text-lg',
             isRunningTests && 'opacity-50 cursor-not-allowed'
           ]"
+          @click="runAllTests"
         >
           {{ isRunningTests ? 'Running Tests...' : 'Run All Tests' }}
         </button>
@@ -254,7 +259,9 @@ function getStatusColor(status: string) {
 
       <!-- Typography Toolbar Demo -->
       <div class="glass-panel rounded-2xl p-6">
-        <h2 class="text-xl font-semibold mb-4">Live Typography Controls</h2>
+        <h2 class="text-xl font-semibold mb-4">
+          Live Typography Controls
+        </h2>
         <div class="space-y-4">
           <TextEditorToolbar />
           
@@ -285,14 +292,18 @@ function getStatusColor(status: string) {
 
       <!-- Test Results -->
       <div class="space-y-6">
-        <h2 class="text-2xl font-semibold text-center">Test Results</h2>
+        <h2 class="text-2xl font-semibold text-center">
+          Test Results
+        </h2>
         
         <div 
           v-for="category in testCategories" 
           :key="category.name"
           class="glass-panel rounded-2xl p-6"
         >
-          <h3 class="text-lg font-medium mb-4">{{ category.name }}</h3>
+          <h3 class="text-lg font-medium mb-4">
+            {{ category.name }}
+          </h3>
           <div class="space-y-3">
             <div 
               v-for="testId in category.tests" 
@@ -312,30 +323,40 @@ function getStatusColor(status: string) {
       </div>
 
       <!-- Summary -->
-      <div v-if="Object.keys(testResults).length > 0" class="glass-panel rounded-2xl p-6">
-        <h3 class="text-lg font-medium mb-4">Test Summary</h3>
+      <div
+        v-if="Object.keys(testResults).length > 0"
+        class="glass-panel rounded-2xl p-6"
+      >
+        <h3 class="text-lg font-medium mb-4">
+          Test Summary
+        </h3>
         <div class="grid grid-cols-3 gap-4 text-center">
           <div class="space-y-2">
             <div class="text-2xl font-bold text-emerald-400">
               {{ Object.values(testResults).filter(r => r.status === 'success').length }}
             </div>
-            <div class="text-sm text-white/60">Passed</div>
+            <div class="text-sm text-white/60">
+              Passed
+            </div>
           </div>
           <div class="space-y-2">
             <div class="text-2xl font-bold text-red-400">
               {{ Object.values(testResults).filter(r => r.status === 'error').length }}
             </div>
-            <div class="text-sm text-white/60">Failed</div>
+            <div class="text-sm text-white/60">
+              Failed
+            </div>
           </div>
           <div class="space-y-2">
             <div class="text-2xl font-bold text-yellow-400">
               {{ Object.values(testResults).filter(r => r.status === 'pending').length }}
             </div>
-            <div class="text-sm text-white/60">Pending</div>
+            <div class="text-sm text-white/60">
+              Pending
+            </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>

@@ -2,13 +2,15 @@
 import { onMounted, onUnmounted, computed, ref, watch, nextTick } from 'vue'
 import { useDocumentStore } from '@/stores/documentStore'
 import { useUIStore } from '@/stores/uiStore'
-import { reconstructPdfWithOcr, isTauri } from '@/bridge'
+import { reconstructPdfWithOcr, isTauri, pickFile } from '@/bridge'
+import type { ImportOptions } from '@/bridge'
 import Toolbar from '@/components/Toolbar.vue'
 import PagesPanel from '@/components/PagesPanel.vue'
 import CanvasComponent from '@/components/CanvasComponent.vue'
 import LayersPanel from '@/components/LayersPanel.vue'
 import PropertiesPanel from '@/components/PropertiesPanel.vue'
 import PdfStatusBar from '@/components/PdfStatusBar.vue'
+import ImportOptionsDialog from '@/components/ImportOptionsDialog.vue'
 import { ClickSpark, RotatingText, DecryptedText, BackgroundTexture } from '@/components/extra'
 
 const documentStore = useDocumentStore()
@@ -19,6 +21,8 @@ const showWelcome = ref(true)
 const onboardingStep = ref(0)
 const showOnboarding = ref(false)
 const isOcrProcessing = ref(false)
+const showImportDialog = ref(false)
+const pendingImportFile = ref<{ name: string; data: Uint8Array } | null>(null)
 
 // Mobile responsive state
 const isMobile = ref(false)
@@ -93,9 +97,24 @@ const statusMessages = computed(() => {
 })
 
 async function handleImport() {
-  console.log('[Import] Starting import...');
+  // Pick file first, then show options dialog
+  const file = await pickFile({ accept: ['.pdf', '.docx'] })
+  if (!file) return
   
-  const result = await documentStore.importDocument(async (current, total, status) => {
+  pendingImportFile.value = file
+  showImportDialog.value = true
+}
+
+async function handleImportConfirm(options: ImportOptions) {
+  showImportDialog.value = false
+  const file = pendingImportFile.value
+  pendingImportFile.value = null
+  
+  if (!file) return
+  
+  console.log('[Import] Starting import with options:', options);
+  
+  const result = await documentStore.importDocument(options, file, async (current, total, status) => {
     console.log(`[Import] Progress: ${current}/${total} - ${status}`);
     
     // Show loading overlay
@@ -391,12 +410,26 @@ onUnmounted(() => {
     leave-active-class="transition-all duration-300"
     leave-to-class="opacity-0 scale-95"
   >
-    <BackgroundTexture v-if="showWelcome" variant="dots" :opacity="0.3" class="fixed inset-0 z-[100] flex items-center justify-center bg-dark-950">
+    <BackgroundTexture
+      v-if="showWelcome"
+      variant="dots"
+      :opacity="0.3"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-dark-950"
+    >
       <!-- Ambient Background -->
       <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[120px] animate-pulse" style="background: rgba(var(--theme-accent-rgb), 0.25)" />
-        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-[100px] animate-pulse" style="background: rgba(var(--theme-secondary-rgb), 0.20); animation-delay: 1s" />
-        <div class="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-[80px] animate-pulse" style="background: rgba(var(--theme-tertiary-rgb), 0.15); animation-delay: 2s" />
+        <div
+          class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[120px] animate-pulse"
+          style="background: rgba(var(--theme-accent-rgb), 0.25)"
+        />
+        <div
+          class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-[100px] animate-pulse"
+          style="background: rgba(var(--theme-secondary-rgb), 0.20); animation-delay: 1s"
+        />
+        <div
+          class="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-[80px] animate-pulse"
+          style="background: rgba(var(--theme-tertiary-rgb), 0.15); animation-delay: 2s"
+        />
       </div>
       
       <div class="relative text-center">
@@ -429,14 +462,16 @@ onUnmounted(() => {
             reveal-direction="center"
           />
         </h1>
-        <p class="text-white/50 text-lg mb-12 font-medium">Document Layer Editor ✨</p>
+        <p class="text-white/50 text-lg mb-12 font-medium">
+          Document Layer Editor ✨
+        </p>
         
         <!-- CTA -->
         <div class="flex flex-col items-center gap-4">
           <button
-            @click="startApp"
             class="group relative px-10 py-4 rounded-2xl text-white font-bold text-lg overflow-hidden transition-all duration-300 hover:scale-105"
             style="background: linear-gradient(135deg, var(--theme-accent), var(--theme-secondary)); box-shadow: 0 4px 30px rgba(var(--theme-accent-rgb), 0.4)"
+            @click="startApp"
           >
             <span class="relative z-10 flex items-center gap-2">Get Started <span class="text-xl">→</span></span>
             <div 
@@ -444,13 +479,18 @@ onUnmounted(() => {
               style="background: linear-gradient(135deg, var(--theme-secondary), var(--theme-accent))"
             />
           </button>
-          <button @click="skipOnboarding" class="text-white/40 text-sm hover:text-white/70 transition-colors font-medium">
+          <button
+            class="text-white/40 text-sm hover:text-white/70 transition-colors font-medium"
+            @click="skipOnboarding"
+          >
             Skip intro
           </button>
         </div>
         
         <!-- Version -->
-        <p class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/25 text-xs font-medium">v1.0.0</p>
+        <p class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/25 text-xs font-medium">
+          v1.0.0
+        </p>
       </div>
     </BackgroundTexture>
   </Transition>
@@ -462,19 +502,27 @@ onUnmounted(() => {
     leave-active-class="transition-all duration-300"
     leave-to-class="opacity-0"
   >
-    <BackgroundTexture v-if="showOnboarding" variant="waves" :opacity="0.2" class="fixed inset-0 z-[90] flex items-center justify-center bg-dark-950/95 backdrop-blur-xl">
+    <BackgroundTexture
+      v-if="showOnboarding"
+      variant="waves"
+      :opacity="0.2"
+      class="fixed inset-0 z-[90] flex items-center justify-center bg-dark-950/95 backdrop-blur-xl"
+    >
       <div class="w-full max-w-2xl px-8">
         <!-- Stepper Progress -->
         <div class="flex items-center justify-center gap-2 mb-12">
-          <template v-for="(_, i) in onboardingSteps" :key="i">
+          <template
+            v-for="(_, i) in onboardingSteps"
+            :key="i"
+          >
             <button
-              @click="onboardingStep = i"
               :class="['w-3.5 h-3.5 rounded-full transition-all duration-300 ring-2', i === onboardingStep ? 'scale-125' : '', i > onboardingStep ? 'bg-white/10 ring-white/5' : '']"
               :style="i === onboardingStep 
                 ? { background: `linear-gradient(135deg, var(--theme-accent), var(--theme-secondary))`, boxShadow: '0 0 12px rgba(var(--theme-accent-rgb), 0.4)', '--tw-ring-color': 'rgba(var(--theme-accent-rgb), 0.3)' } as any
                 : i < onboardingStep 
                   ? { background: 'rgba(var(--theme-accent-rgb), 0.6)', '--tw-ring-color': 'rgba(var(--theme-accent-rgb), 0.2)' } as any
                   : {}"
+              @click="onboardingStep = i"
             />
             <div 
               v-if="i < onboardingSteps.length - 1" 
@@ -495,17 +543,35 @@ onUnmounted(() => {
             leave-from-class="opacity-100 translate-x-0"
             leave-to-class="opacity-0 -translate-x-8"
           >
-            <div :key="onboardingStep" class="text-center">
+            <div
+              :key="onboardingStep"
+              class="text-center"
+            >
               <div 
                 class="w-24 h-24 mx-auto mb-6 rounded-3xl flex items-center justify-center border"
                 style="background: linear-gradient(135deg, rgba(var(--theme-accent-rgb), 0.2), rgba(var(--theme-secondary-rgb), 0.15), rgba(var(--theme-tertiary-rgb), 0.1)); border-color: rgba(var(--theme-accent-rgb), 0.2); box-shadow: 0 0 40px rgba(var(--theme-accent-rgb), 0.15)"
               >
-                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" :style="{ color: 'var(--theme-accent)' }">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="onboardingSteps[onboardingStep].icon" />
+                <svg
+                  class="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  :style="{ color: 'var(--theme-accent)' }"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    :d="onboardingSteps[onboardingStep].icon"
+                  />
                 </svg>
               </div>
-              <h2 class="text-3xl font-black text-white mb-3">{{ onboardingSteps[onboardingStep].title }}</h2>
-              <p class="text-white/50 text-lg font-medium">{{ onboardingSteps[onboardingStep].desc }}</p>
+              <h2 class="text-3xl font-black text-white mb-3">
+                {{ onboardingSteps[onboardingStep].title }}
+              </h2>
+              <p class="text-white/50 text-lg font-medium">
+                {{ onboardingSteps[onboardingStep].desc }}
+              </p>
             </div>
           </Transition>
         </div>
@@ -520,16 +586,16 @@ onUnmounted(() => {
           >
             <button
               v-if="onboardingStep > 0"
-              @click="onboardingStep--"
               class="px-6 py-3 rounded-2xl bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all duration-300 font-medium border border-white/10"
+              @click="onboardingStep--"
             >
               ← Back
             </button>
           </Transition>
           <button
-            @click="onboardingStep < onboardingSteps.length - 1 ? onboardingStep++ : finishOnboarding()"
             class="px-8 py-3 rounded-2xl text-white font-bold hover:scale-105 transition-all duration-300"
             style="background: linear-gradient(135deg, var(--theme-accent), var(--theme-secondary)); box-shadow: 0 4px 30px rgba(var(--theme-accent-rgb), 0.4)"
+            @click="onboardingStep < onboardingSteps.length - 1 ? onboardingStep++ : finishOnboarding()"
           >
             {{ onboardingStep < onboardingSteps.length - 1 ? 'Next →' : 'Start Editing ✨' }}
           </button>
@@ -543,16 +609,33 @@ onUnmounted(() => {
     enter-active-class="transition-all duration-500 delay-100"
     enter-from-class="opacity-0"
   >
-    <BackgroundTexture v-show="!showWelcome && !showOnboarding" variant="dots" :opacity="0.15" class="flex h-screen flex-col bg-dark-950 overflow-hidden">
+    <BackgroundTexture
+      v-show="!showWelcome && !showOnboarding"
+      variant="dots"
+      :opacity="0.15"
+      class="flex h-screen flex-col bg-dark-950 overflow-hidden"
+    >
       <!-- Ambient Background -->
       <div class="fixed inset-0 pointer-events-none">
-        <div class="absolute top-0 left-1/4 w-[600px] h-[400px] rounded-full blur-[150px] hidden md:block" style="background: rgba(var(--theme-accent-rgb), 0.08)" />
-        <div class="absolute bottom-0 right-1/4 w-[500px] h-[300px] rounded-full blur-[120px] hidden md:block" style="background: rgba(var(--theme-secondary-rgb), 0.06)" />
-        <div class="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full blur-[100px] hidden md:block" style="background: rgba(var(--theme-tertiary-rgb), 0.05)" />
+        <div
+          class="absolute top-0 left-1/4 w-[600px] h-[400px] rounded-full blur-[150px] hidden md:block"
+          style="background: rgba(var(--theme-accent-rgb), 0.08)"
+        />
+        <div
+          class="absolute bottom-0 right-1/4 w-[500px] h-[300px] rounded-full blur-[120px] hidden md:block"
+          style="background: rgba(var(--theme-secondary-rgb), 0.06)"
+        />
+        <div
+          class="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full blur-[100px] hidden md:block"
+          style="background: rgba(var(--theme-tertiary-rgb), 0.05)"
+        />
       </div>
 
       <!-- Desktop Toolbar / Mobile Header -->
-      <Toolbar :is-mobile="isMobile" @toggle-drawer="toggleDrawer" />
+      <Toolbar
+        :is-mobile="isMobile"
+        @toggle-drawer="toggleDrawer"
+      />
       
       <!-- PDF Analysis Status Bar (hidden on mobile) -->
       <PdfStatusBar
@@ -566,7 +649,10 @@ onUnmounted(() => {
       />
 
       <!-- Main Content -->
-      <main class="relative flex flex-1 gap-2 md:gap-3 p-2 md:p-3 overflow-hidden" :class="{ 'pb-20': isMobile }">
+      <main
+        class="relative flex flex-1 gap-2 md:gap-3 p-2 md:p-3 overflow-hidden"
+        :class="{ 'pb-20': isMobile }"
+      >
         <!-- Desktop: Pages Panel -->
         <Transition
           enter-active-class="transition-all duration-300 ease-out"
@@ -574,7 +660,10 @@ onUnmounted(() => {
           leave-active-class="transition-all duration-200"
           leave-to-class="opacity-0 -translate-x-4"
         >
-          <aside v-if="isPagesVisible && !isMobile" class="w-44 lg:w-48 flex-shrink-0 glass-panel rounded-2xl overflow-hidden">
+          <aside
+            v-if="isPagesVisible && !isMobile"
+            class="w-44 lg:w-48 flex-shrink-0 glass-panel rounded-2xl overflow-hidden"
+          >
             <PagesPanel />
           </aside>
         </Transition>
@@ -598,14 +687,20 @@ onUnmounted(() => {
           leave-active-class="transition-all duration-200"
           leave-to-class="opacity-0 translate-x-4"
         >
-          <div v-if="(isLayersVisible || isPropertiesVisible) && !isMobile" class="flex w-64 lg:w-72 flex-shrink-0 flex-col gap-2 md:gap-3">
+          <div
+            v-if="(isLayersVisible || isPropertiesVisible) && !isMobile"
+            class="flex w-64 lg:w-72 flex-shrink-0 flex-col gap-2 md:gap-3"
+          >
             <Transition
               enter-active-class="transition-all duration-300 ease-out delay-75"
               enter-from-class="opacity-0 translate-y-2"
               leave-active-class="transition-all duration-200"
               leave-to-class="opacity-0"
             >
-              <div v-if="isLayersVisible" class="flex-1 glass-panel rounded-2xl overflow-hidden min-h-0">
+              <div
+                v-if="isLayersVisible"
+                class="flex-1 glass-panel rounded-2xl overflow-hidden min-h-0"
+              >
                 <LayersPanel />
               </div>
             </Transition>
@@ -615,7 +710,10 @@ onUnmounted(() => {
               leave-active-class="transition-all duration-200"
               leave-to-class="opacity-0"
             >
-              <div v-if="isPropertiesVisible" class="flex-1 glass-panel rounded-2xl overflow-hidden min-h-0">
+              <div
+                v-if="isPropertiesVisible"
+                class="flex-1 glass-panel rounded-2xl overflow-hidden min-h-0"
+              >
                 <PropertiesPanel />
               </div>
             </Transition>
@@ -624,7 +722,10 @@ onUnmounted(() => {
       </main>
 
       <!-- Desktop Status Bar -->
-      <footer v-if="!isMobile" class="relative flex h-8 items-center justify-between px-4 text-xs border-t border-white/[0.03]">
+      <footer
+        v-if="!isMobile"
+        class="relative flex h-8 items-center justify-between px-4 text-xs border-t border-white/[0.03]"
+      >
         <RotatingText
           :texts="statusMessages"
           :rotation-interval="3000"
@@ -636,56 +737,105 @@ onUnmounted(() => {
         />
         <div class="flex items-center gap-4">
           <button
-            @click="uiStore.togglePanel('pages')"
             :class="['transition-all duration-200', isPagesVisible ? 'text-violet-400' : 'text-white/30 hover:text-white/60']"
-          >Pages</button>
+            @click="uiStore.togglePanel('pages')"
+          >
+            Pages
+          </button>
           <button
-            @click="uiStore.togglePanel('layers')"
             :class="['transition-all duration-200', isLayersVisible ? 'text-violet-400' : 'text-white/30 hover:text-white/60']"
-          >Layers</button>
+            @click="uiStore.togglePanel('layers')"
+          >
+            Layers
+          </button>
           <button
-            @click="uiStore.togglePanel('properties')"
             :class="['transition-all duration-200', isPropertiesVisible ? 'text-violet-400' : 'text-white/30 hover:text-white/60']"
-          >Properties</button>
+            @click="uiStore.togglePanel('properties')"
+          >
+            Properties
+          </button>
         </div>
       </footer>
 
       <!-- Mobile Bottom Navigation -->
-      <nav v-if="isMobile" class="mobile-nav">
+      <nav
+        v-if="isMobile"
+        class="mobile-nav"
+      >
         <div class="flex items-center justify-around">
           <button 
-            @click="mobileNavTab = 'canvas'; closeDrawer()"
             :class="['mobile-nav-item flex-1', mobileNavTab === 'canvas' && !activeDrawer && 'active']"
+            @click="mobileNavTab = 'canvas'; closeDrawer()"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+              />
             </svg>
             <span class="text-[10px]">Canvas</span>
           </button>
           <button 
-            @click="toggleDrawer('pages')"
             :class="['mobile-nav-item flex-1', activeDrawer === 'pages' && 'active']"
+            @click="toggleDrawer('pages')"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
             <span class="text-[10px]">Pages</span>
           </button>
           <button 
-            @click="toggleDrawer('layers')"
             :class="['mobile-nav-item flex-1', activeDrawer === 'layers' && 'active']"
+            @click="toggleDrawer('layers')"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
             </svg>
             <span class="text-[10px]">Layers</span>
           </button>
           <button 
-            @click="toggleDrawer('properties')"
             :class="['mobile-nav-item flex-1', activeDrawer === 'properties' && 'active']"
+            @click="toggleDrawer('properties')"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+              />
             </svg>
             <span class="text-[10px]">Props</span>
           </button>
@@ -701,7 +851,11 @@ onUnmounted(() => {
           leave-active-class="transition-opacity duration-200"
           leave-to-class="opacity-0"
         >
-          <div v-if="activeDrawer && isMobile" class="overlay-backdrop" @click="closeDrawer" />
+          <div
+            v-if="activeDrawer && isMobile"
+            class="overlay-backdrop"
+            @click="closeDrawer"
+          />
         </Transition>
 
         <!-- Pages Drawer -->
@@ -711,10 +865,16 @@ onUnmounted(() => {
           leave-active-class="transition-transform duration-200 ease-ios"
           leave-to-class="translate-y-full"
         >
-          <div v-if="activeDrawer === 'pages' && isMobile" class="mobile-drawer-bottom">
+          <div
+            v-if="activeDrawer === 'pages' && isMobile"
+            class="mobile-drawer-bottom"
+          >
             <div class="drawer-handle" />
             <div class="h-[60vh] overflow-hidden">
-              <PagesPanel :is-mobile="true" @close="closeDrawer" />
+              <PagesPanel
+                :is-mobile="true"
+                @close="closeDrawer"
+              />
             </div>
           </div>
         </Transition>
@@ -726,10 +886,16 @@ onUnmounted(() => {
           leave-active-class="transition-transform duration-200 ease-ios"
           leave-to-class="translate-y-full"
         >
-          <div v-if="activeDrawer === 'layers' && isMobile" class="mobile-drawer-bottom">
+          <div
+            v-if="activeDrawer === 'layers' && isMobile"
+            class="mobile-drawer-bottom"
+          >
             <div class="drawer-handle" />
             <div class="h-[60vh] overflow-hidden">
-              <LayersPanel :is-mobile="true" @close="closeDrawer" />
+              <LayersPanel
+                :is-mobile="true"
+                @close="closeDrawer"
+              />
             </div>
           </div>
         </Transition>
@@ -741,10 +907,16 @@ onUnmounted(() => {
           leave-active-class="transition-transform duration-200 ease-ios"
           leave-to-class="translate-y-full"
         >
-          <div v-if="activeDrawer === 'properties' && isMobile" class="mobile-drawer-bottom">
+          <div
+            v-if="activeDrawer === 'properties' && isMobile"
+            class="mobile-drawer-bottom"
+          >
             <div class="drawer-handle" />
             <div class="h-[70vh] overflow-hidden">
-              <PropertiesPanel :is-mobile="true" @close="closeDrawer" />
+              <PropertiesPanel
+                :is-mobile="true"
+                @close="closeDrawer"
+              />
             </div>
           </div>
         </Transition>
@@ -770,15 +942,51 @@ onUnmounted(() => {
                 'bg-violet-500/10 border-violet-500/20 text-violet-300'
               ]"
             >
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path v-if="notification.type === 'success'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                <path v-else-if="notification.type === 'error'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  v-if="notification.type === 'success'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+                <path
+                  v-else-if="notification.type === 'error'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+                <path
+                  v-else
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span class="text-sm">{{ notification.message }}</span>
-              <button @click="uiStore.dismissNotification(notification.id)" class="ml-2 p-1 rounded hover:bg-white/10 transition-colors">
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <button
+                class="ml-2 p-1 rounded hover:bg-white/10 transition-colors"
+                @click="uiStore.dismissNotification(notification.id)"
+              >
+                <svg
+                  class="h-3 w-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -796,7 +1004,10 @@ onUnmounted(() => {
       leave-active-class="transition-all duration-200"
       leave-to-class="opacity-0"
     >
-      <div v-if="isLoading" class="fixed inset-0 z-[9999] flex items-center justify-center bg-dark-950/90 backdrop-blur-xl">
+      <div
+        v-if="isLoading"
+        class="fixed inset-0 z-[9999] flex items-center justify-center bg-dark-950/90 backdrop-blur-xl"
+      >
         <div class="bg-dark-800 border border-white/10 rounded-2xl px-8 py-6 min-w-[320px] shadow-2xl">
           <div class="flex items-center gap-4 mb-4">
             <div class="relative w-6 h-6">
@@ -805,7 +1016,10 @@ onUnmounted(() => {
             </div>
             <span class="text-white font-medium">{{ loadingMessage }}</span>
           </div>
-          <div v-if="importProgress" class="space-y-2">
+          <div
+            v-if="importProgress"
+            class="space-y-2"
+          >
             <div class="flex justify-between text-sm text-white/60">
               <span>{{ importProgress.status }}</span>
               <span class="font-mono">{{ progressPercent }}%</span>
@@ -824,4 +1038,12 @@ onUnmounted(() => {
       </div>
     </Transition>
   </Teleport>
+
+  <!-- Import Options Dialog -->
+  <ImportOptionsDialog 
+    :show="showImportDialog"
+    :file-name="pendingImportFile?.name"
+    @close="showImportDialog = false; pendingImportFile = null" 
+    @confirm="handleImportConfirm" 
+  />
 </template>

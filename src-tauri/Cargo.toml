@@ -47,6 +47,9 @@ ordered-float = "4.2"
 indexmap = "2.2"
 regex-lite = "0.1"
 
+# Parallel processing
+rayon = "1.10"
+
 # OCR support (optional - requires system libraries)
 [dependencies.tesseract]
 version = "0.14"

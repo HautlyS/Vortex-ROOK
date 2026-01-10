@@ -344,9 +344,17 @@ const injectStyles = () => {
     @mouseleave="hoverIntensity ? (isHovered = false) : null"
   >
     <div class="relative w-full h-full">
-      <div v-for="(div, index) in blurDivs" :key="index" class="absolute inset-0" :style="div.style" />
+      <div
+        v-for="(div, index) in blurDivs"
+        :key="index"
+        class="absolute inset-0"
+        :style="div.style"
+      />
     </div>
-    <div v-if="$slots.default" class="relative">
+    <div
+      v-if="$slots.default"
+      class="relative"
+    >
       <slot />
     </div>
   </div>

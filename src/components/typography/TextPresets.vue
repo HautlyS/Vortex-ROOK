@@ -17,14 +17,14 @@ const quickStyles = [
     <button
       v-for="preset in quickStyles"
       :key="preset.name"
-      @click="applyPreset(preset.style)"
       :class="[
         'glass-btn text-xs px-2 py-1',
         state.fontSize === preset.style.fontSize && 
-        state.fontWeight === preset.style.fontWeight && 
-        'bg-violet-500/20 text-violet-300'
+          state.fontWeight === preset.style.fontWeight && 
+          'bg-violet-500/20 text-violet-300'
       ]"
       :title="`Apply ${preset.name} style`"
+      @click="applyPreset(preset.style)"
     >
       {{ preset.name }}
     </button>

@@ -51,10 +51,25 @@ const previewSelectionStyle = computed(() => ({
         <div class="w-full max-w-md glass-panel-strong rounded-2xl overflow-hidden">
           <!-- Header -->
           <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
-            <h2 class="text-lg font-bold text-white">🎨 Theme</h2>
-            <button @click="emit('close')" class="text-white/40 hover:text-white p-1">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <h2 class="text-lg font-bold text-white">
+              🎨 Theme
+            </h2>
+            <button
+              class="text-white/40 hover:text-white p-1"
+              @click="emit('close')"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -66,15 +81,24 @@ const previewSelectionStyle = computed(() => ({
               <button
                 v-for="p in presets"
                 :key="p.name"
-                @click="applyPreset(p)"
                 :title="p.name"
                 class="group aspect-square rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all flex items-center justify-center"
+                @click="applyPreset(p)"
               >
                 <div class="flex flex-col gap-0.5">
-                  <div class="w-3 h-3 rounded-full" :style="{ background: p.colors[0] }" />
+                  <div
+                    class="w-3 h-3 rounded-full"
+                    :style="{ background: p.colors[0] }"
+                  />
                   <div class="flex gap-0.5">
-                    <div class="w-1.5 h-1.5 rounded-full" :style="{ background: p.colors[1] }" />
-                    <div class="w-1.5 h-1.5 rounded-full" :style="{ background: p.colors[2] }" />
+                    <div
+                      class="w-1.5 h-1.5 rounded-full"
+                      :style="{ background: p.colors[1] }"
+                    />
+                    <div
+                      class="w-1.5 h-1.5 rounded-full"
+                      :style="{ background: p.colors[2] }"
+                    />
                   </div>
                 </div>
               </button>
@@ -82,15 +106,19 @@ const previewSelectionStyle = computed(() => ({
 
             <!-- Colors -->
             <div class="flex gap-3">
-              <div v-for="item in colorItems" :key="item.key" class="flex-1">
+              <div
+                v-for="item in colorItems"
+                :key="item.key"
+                class="flex-1"
+              >
                 <label class="block">
                   <div class="relative mb-2">
                     <input
                       type="color"
                       :value="theme.colors[item.key]"
-                      @input="theme.setColor(item.key, ($event.target as HTMLInputElement).value)"
                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
+                      @input="theme.setColor(item.key, ($event.target as HTMLInputElement).value)"
+                    >
                     <div
                       class="w-full h-12 rounded-xl ring-2 ring-white/10 hover:ring-white/20 cursor-pointer transition-all"
                       :style="{ background: theme.colors[item.key] }"
@@ -107,10 +135,10 @@ const previewSelectionStyle = computed(() => ({
                 <input
                   type="color"
                   :value="theme.colors.selection"
-                  @input="theme.setColor('selection', ($event.target as HTMLInputElement).value)"
                   :disabled="theme.invertSelection"
                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                />
+                  @input="theme.setColor('selection', ($event.target as HTMLInputElement).value)"
+                >
                 <div
                   class="w-10 h-10 rounded-lg ring-2 ring-white/10"
                   :class="theme.invertSelection ? 'opacity-40' : 'cursor-pointer hover:ring-white/20'"
@@ -118,13 +146,15 @@ const previewSelectionStyle = computed(() => ({
                 />
               </label>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-white/80">Selection</p>
+                <p class="text-sm font-medium text-white/80">
+                  Selection
+                </p>
                 <label class="flex items-center gap-2 mt-1 cursor-pointer">
                   <input
-                    type="checkbox"
                     v-model="theme.invertSelection"
+                    type="checkbox"
                     class="w-4 h-4 rounded border-white/20 bg-white/5 accent-violet-500"
-                  />
+                  >
                   <span class="text-xs text-white/50">Auto contrast</span>
                 </label>
               </div>
@@ -136,18 +166,28 @@ const previewSelectionStyle = computed(() => ({
                 <button
                   class="px-3 py-1.5 rounded-lg text-white text-xs font-medium"
                   :style="{ background: `linear-gradient(135deg, ${theme.colors.accent}, ${theme.colors.secondary})` }"
-                >Primary</button>
+                >
+                  Primary
+                </button>
                 <button
                   class="px-3 py-1.5 rounded-lg text-xs font-medium border"
                   :style="{ borderColor: theme.colors.accent, color: theme.colors.accent }"
-                >Secondary</button>
-                <span class="px-3 py-1.5 rounded-lg text-xs" :style="{ background: theme.colors.tertiary + '20', color: theme.colors.tertiary }">Badge</span>
+                >
+                  Secondary
+                </button>
+                <span
+                  class="px-3 py-1.5 rounded-lg text-xs"
+                  :style="{ background: theme.colors.tertiary + '20', color: theme.colors.tertiary }"
+                >Badge</span>
               </div>
               <p class="text-xs text-white/60 leading-relaxed">
                 Text with <span :style="{ color: theme.colors.accent }">accent</span>,
                 <span :style="{ color: theme.colors.secondary }">secondary</span>, and
                 <span :style="{ color: theme.colors.tertiary }">tertiary</span> colors.
-                <span class="px-1 rounded" :style="previewSelectionStyle">Selected text</span>
+                <span
+                  class="px-1 rounded"
+                  :style="previewSelectionStyle"
+                >Selected text</span>
               </p>
             </div>
           </div>
@@ -155,14 +195,18 @@ const previewSelectionStyle = computed(() => ({
           <!-- Footer -->
           <div class="px-5 py-4 border-t border-white/10 flex justify-between">
             <button
-              @click="theme.resetColors()"
               class="text-xs text-white/40 hover:text-white/70 transition-colors"
-            >Reset</button>
+              @click="theme.resetColors()"
+            >
+              Reset
+            </button>
             <button
-              @click="emit('close')"
               class="px-5 py-2 rounded-xl text-sm font-bold text-white hover:scale-105 transition-all"
               :style="{ background: `linear-gradient(135deg, ${theme.colors.accent}, ${theme.colors.secondary})` }"
-            >Done</button>
+              @click="emit('close')"
+            >
+              Done
+            </button>
           </div>
         </div>
       </div>

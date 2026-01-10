@@ -4,8 +4,8 @@
       <div
         v-for="(item, idx) in items"
         :key="idx"
-        class="flex-1 relative overflow-hidden text-center shadow-[0_-1px_0_0_#fff]"
         :ref="el => setItemRef(el as HTMLDivElement, idx)"
+        class="flex-1 relative overflow-hidden text-center shadow-[0_-1px_0_0_#fff]"
       >
         <a
           class="flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-semibold text-white text-[4vh] hover:text-[#0b0b0b] focus:text-white focus-visible:text-[#0b0b0b]"
@@ -17,12 +17,18 @@
         </a>
 
         <div
-          class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-white translate-y-[101%]"
           :ref="el => (marqueeRefs[idx] = el as HTMLDivElement)"
+          class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-white translate-y-[101%]"
         >
-          <div class="h-full w-[200%] flex" :ref="el => (marqueeInnerRefs[idx] = el as HTMLDivElement)">
+          <div
+            :ref="el => (marqueeInnerRefs[idx] = el as HTMLDivElement)"
+            class="h-full w-[200%] flex"
+          >
             <div class="flex items-center relative h-full w-[200%] will-change-transform animate-marquee">
-              <template v-for="i in 4" :key="`${idx}-${i}`">
+              <template
+                v-for="i in 4"
+                :key="`${idx}-${i}`"
+              >
                 <span class="text-[#0b0b0b] uppercase font-normal text-[4vh] leading-[1.2] p-[1vh_1vw_0]">
                   {{ item.text }}
                 </span>

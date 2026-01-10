@@ -70,8 +70,8 @@ type InvokeFn = (cmd: string, args?: Record<string, unknown>) => Promise<unknown
 let invoke: InvokeFn | null = null;
 
 // WebRTC state
-let peerConnections = new Map<string, RTCPeerConnection>();
-let dataChannels = new Map<string, RTCDataChannel>();
+const peerConnections = new Map<string, RTCPeerConnection>();
+const dataChannels = new Map<string, RTCDataChannel>();
 let localPeerId: string | null = null;
 let currentSession: SyncSession | null = null;
 let currentRole: SyncRole = 'viewer';

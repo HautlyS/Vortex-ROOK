@@ -188,12 +188,26 @@ onUnmounted(() => {
     <!-- Trigger Button -->
     <button
       ref="triggerRef"
-      @click.stop="toggleOpen"
       class="w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-left flex items-center justify-between gap-1 text-xs text-white hover:bg-white/10 transition-colors"
+      @click.stop="toggleOpen"
     >
-      <span class="truncate" :style="{ fontFamily: modelValue || 'inherit' }">{{ currentFontDisplay }}</span>
-      <svg class="w-3 h-3 text-white/40 flex-shrink-0 transition-transform" :class="{ 'rotate-180': isOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      <span
+        class="truncate"
+        :style="{ fontFamily: modelValue || 'inherit' }"
+      >{{ currentFontDisplay }}</span>
+      <svg
+        class="w-3 h-3 text-white/40 flex-shrink-0 transition-transform"
+        :class="{ 'rotate-180': isOpen }"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
       </svg>
     </button>
 
@@ -216,11 +230,21 @@ onUnmounted(() => {
           <!-- Add Font Button -->
           <div class="p-2 border-b border-white/[0.05]">
             <button
-              @click="openFontManager"
               class="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 border border-violet-500/20 text-violet-300 text-[11px] font-medium flex items-center justify-center gap-2 hover:from-violet-500/30 hover:to-fuchsia-500/30 transition-all"
+              @click="openFontManager"
             >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               Add Fonts
             </button>
@@ -229,15 +253,25 @@ onUnmounted(() => {
           <!-- Search -->
           <div class="px-2 py-2 border-b border-white/[0.05]">
             <div class="relative">
-              <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                class="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
               <input
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search..."
                 class="w-full pl-7 pr-2 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-[11px] text-white placeholder-white/25 focus:outline-none focus:border-violet-500/40"
-              />
+              >
             </div>
           </div>
 
@@ -245,33 +279,47 @@ onUnmounted(() => {
           <div class="flex border-b border-white/[0.05] text-[10px]">
             <button
               v-if="recentFonts.length > 0"
-              @click="activeTab = 'recent'"
               :class="['flex-1 px-2 py-1.5 font-medium transition-colors', activeTab === 'recent' ? 'text-violet-300 bg-violet-500/10 border-b border-violet-500' : 'text-white/35 hover:text-white/50']"
-            >Recent</button>
+              @click="activeTab = 'recent'"
+            >
+              Recent
+            </button>
             <button
-              @click="activeTab = 'system'"
               :class="['flex-1 px-2 py-1.5 font-medium transition-colors', activeTab === 'system' ? 'text-violet-300 bg-violet-500/10 border-b border-violet-500' : 'text-white/35 hover:text-white/50']"
-            >System</button>
+              @click="activeTab = 'system'"
+            >
+              System
+            </button>
             <button
               v-if="showGoogleFonts !== false"
-              @click="activeTab = 'google'"
               :class="['flex-1 px-2 py-1.5 font-medium transition-colors', activeTab === 'google' ? 'text-violet-300 bg-violet-500/10 border-b border-violet-500' : 'text-white/35 hover:text-white/50']"
-            >Added</button>
+              @click="activeTab = 'google'"
+            >
+              Added
+            </button>
           </div>
 
           <!-- Category Filter -->
-          <div v-if="activeTab === 'google'" class="flex gap-1 px-2 py-1.5 border-b border-white/[0.05] overflow-x-auto scrollbar-none">
+          <div
+            v-if="activeTab === 'google'"
+            class="flex gap-1 px-2 py-1.5 border-b border-white/[0.05] overflow-x-auto scrollbar-none"
+          >
             <button
               v-for="cat in categories"
               :key="cat"
-              @click="selectedCategory = cat"
               :class="['px-1.5 py-0.5 rounded text-[9px] whitespace-nowrap transition-colors', selectedCategory === cat ? 'bg-violet-500/25 text-violet-300' : 'text-white/30 hover:text-white/50']"
-            >{{ cat === 'all' ? 'All' : cat }}</button>
+              @click="selectedCategory = cat"
+            >
+              {{ cat === 'all' ? 'All' : cat }}
+            </button>
           </div>
 
           <!-- Font List -->
           <div class="max-h-52 overflow-y-auto scrollbar-thin">
-            <div v-if="isLoading" class="flex items-center justify-center py-6">
+            <div
+              v-if="isLoading"
+              class="flex items-center justify-center py-6"
+            >
               <div class="w-4 h-4 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
             </div>
 
@@ -279,12 +327,24 @@ onUnmounted(() => {
               <button
                 v-for="family in recentFonts"
                 :key="family"
-                @click="selectFont(family, 'recent')"
                 :class="['w-full px-3 py-2 text-left flex items-center justify-between group transition-colors', modelValue === family ? 'bg-violet-500/15' : 'hover:bg-white/[0.04]']"
+                @click="selectFont(family, 'recent')"
               >
-                <span class="text-[12px] text-white/85 group-hover:text-white truncate" :style="{ fontFamily: family }">{{ family }}</span>
-                <svg v-if="modelValue === family" class="w-3.5 h-3.5 text-violet-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                <span
+                  class="text-[12px] text-white/85 group-hover:text-white truncate"
+                  :style="{ fontFamily: family }"
+                >{{ family }}</span>
+                <svg
+                  v-if="modelValue === family"
+                  class="w-3.5 h-3.5 text-violet-400 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               </button>
             </template>
@@ -293,38 +353,75 @@ onUnmounted(() => {
               <button
                 v-for="font in filteredSystemFonts"
                 :key="font.family"
-                @click="selectFont(font.family, 'system')"
                 :class="['w-full px-3 py-2 text-left flex items-center justify-between group transition-colors', modelValue === font.family ? 'bg-violet-500/15' : 'hover:bg-white/[0.04]']"
+                @click="selectFont(font.family, 'system')"
               >
-                <span class="text-[12px] text-white/85 group-hover:text-white truncate" :style="{ fontFamily: font.family }">{{ font.family }}</span>
-                <svg v-if="modelValue === font.family" class="w-3.5 h-3.5 text-violet-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                <span
+                  class="text-[12px] text-white/85 group-hover:text-white truncate"
+                  :style="{ fontFamily: font.family }"
+                >{{ font.family }}</span>
+                <svg
+                  v-if="modelValue === font.family"
+                  class="w-3.5 h-3.5 text-violet-400 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               </button>
-              <div v-if="filteredSystemFonts.length === 0" class="px-3 py-6 text-center text-white/25 text-[11px]">No fonts found</div>
+              <div
+                v-if="filteredSystemFonts.length === 0"
+                class="px-3 py-6 text-center text-white/25 text-[11px]"
+              >
+                No fonts found
+              </div>
             </template>
 
             <template v-else>
               <button
                 v-for="font in filteredGoogleFonts"
                 :key="font.family"
-                @click="selectFont(font.family, 'google')"
                 :class="['w-full px-3 py-2 text-left flex items-center justify-between group transition-colors', modelValue === font.family ? 'bg-violet-500/15' : 'hover:bg-white/[0.04]']"
+                @click="selectFont(font.family, 'google')"
               >
                 <div class="flex items-center gap-1.5 min-w-0">
                   <span class="text-[12px] text-white/85 group-hover:text-white truncate">{{ font.family }}</span>
                   <span class="text-[8px] text-white/30 px-1 py-0.5 rounded bg-white/[0.06] flex-shrink-0">{{ font.category }}</span>
                 </div>
                 <div class="flex items-center gap-1.5 flex-shrink-0">
-                  <div v-if="loadingFont === font.family" class="w-3.5 h-3.5 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
-                  <svg v-else-if="modelValue === font.family" class="w-3.5 h-3.5 text-violet-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  <div
+                    v-if="loadingFont === font.family"
+                    class="w-3.5 h-3.5 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin"
+                  />
+                  <svg
+                    v-else-if="modelValue === font.family"
+                    class="w-3.5 h-3.5 text-violet-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    />
                   </svg>
                 </div>
               </button>
-              <div v-if="filteredGoogleFonts.length === 0" class="px-3 py-6 text-center text-white/25 text-[11px]">
+              <div
+                v-if="filteredGoogleFonts.length === 0"
+                class="px-3 py-6 text-center text-white/25 text-[11px]"
+              >
                 <p>No fonts added yet</p>
-                <button @click="openFontManager" class="mt-2 text-violet-400 hover:text-violet-300">Browse fonts →</button>
+                <button
+                  class="mt-2 text-violet-400 hover:text-violet-300"
+                  @click="openFontManager"
+                >
+                  Browse fonts →
+                </button>
               </div>
             </template>
           </div>

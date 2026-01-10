@@ -20,15 +20,25 @@ function setAlignment(align: string) {
     <button
       v-for="alignment in alignments"
       :key="alignment.value"
-      @click="setAlignment(alignment.value)"
       :class="[
         'glass-btn-icon',
         state.textAlign === alignment.value && 'bg-violet-500/20 text-violet-300 shadow-glow-sm'
       ]"
       :title="alignment.title"
+      @click="setAlignment(alignment.value)"
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="alignment.icon" />
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          :d="alignment.icon"
+        />
       </svg>
     </button>
   </div>

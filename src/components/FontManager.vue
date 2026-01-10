@@ -188,29 +188,61 @@ onMounted(async () => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="open" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div
+        v-if="open"
+        class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      >
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="emit('close')" />
+        <div
+          class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+          @click="emit('close')"
+        />
         
         <!-- Modal -->
         <div class="relative w-full max-w-4xl h-[85vh] max-h-[700px] bg-[#0c0c10] rounded-2xl border border-white/[0.08] shadow-2xl flex flex-col overflow-hidden">
-          
           <!-- Header -->
           <div class="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
             <div class="flex items-center gap-4">
               <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                <svg
+                  class="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h8m-8 6h16"
+                  />
                 </svg>
               </div>
               <div>
-                <h2 class="text-lg font-semibold text-white">Font Manager</h2>
-                <p class="text-xs text-white/40">Add fonts to your library</p>
+                <h2 class="text-lg font-semibold text-white">
+                  Font Manager
+                </h2>
+                <p class="text-xs text-white/40">
+                  Add fonts to your library
+                </p>
               </div>
             </div>
-            <button @click="emit('close')" class="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <button
+              class="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+              @click="emit('close')"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -220,23 +252,37 @@ onMounted(async () => {
             <!-- Tabs -->
             <div class="flex bg-white/[0.04] rounded-lg p-1">
               <button
-                @click="activeTab = 'google'"
                 :class="['px-4 py-1.5 rounded-md text-sm font-medium transition-all', activeTab === 'google' ? 'bg-violet-500 text-white shadow-lg' : 'text-white/50 hover:text-white']"
+                @click="activeTab = 'google'"
               >
                 <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                  <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
                   </svg>
                   Google Fonts
                 </span>
               </button>
               <button
-                @click="activeTab = 'installed'"
                 :class="['px-4 py-1.5 rounded-md text-sm font-medium transition-all', activeTab === 'installed' ? 'bg-violet-500 text-white shadow-lg' : 'text-white/50 hover:text-white']"
+                @click="activeTab = 'installed'"
               >
                 <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   My Fonts ({{ loadedFonts.size }})
                 </span>
@@ -245,65 +291,102 @@ onMounted(async () => {
 
             <!-- Search -->
             <div class="flex-1 relative">
-              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
               <input
                 v-model="searchQuery"
                 type="text"
                 :placeholder="activeTab === 'google' ? 'Search 1500+ fonts...' : 'Search your fonts...'"
                 class="w-full pl-10 pr-4 py-2 rounded-lg bg-white/[0.04] border border-white/[0.06] text-sm text-white placeholder-white/30 focus:outline-none focus:border-violet-500/50"
-              />
+              >
             </div>
 
             <!-- Import Button -->
             <button
-              @click="importFontFile"
               class="px-4 py-2 rounded-lg bg-white/[0.06] border border-white/[0.08] text-sm text-white/70 hover:text-white hover:bg-white/[0.1] transition-colors flex items-center gap-2"
+              @click="importFontFile"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                />
               </svg>
               Import File
             </button>
           </div>
 
           <!-- Categories (Google tab only) -->
-          <div v-if="activeTab === 'google'" class="px-6 py-2 border-b border-white/[0.06] flex gap-2 overflow-x-auto scrollbar-none">
+          <div
+            v-if="activeTab === 'google'"
+            class="px-6 py-2 border-b border-white/[0.06] flex gap-2 overflow-x-auto scrollbar-none"
+          >
             <button
               v-for="cat in categories"
               :key="cat.id"
-              @click="selectedCategory = cat.id"
               :class="['px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all', selectedCategory === cat.id ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30' : 'text-white/40 hover:text-white/60 border border-transparent hover:border-white/10']"
-            >{{ cat.label }}</button>
+              @click="selectedCategory = cat.id"
+            >
+              {{ cat.label }}
+            </button>
           </div>
 
           <!-- Font Grid -->
           <div class="flex-1 overflow-y-auto p-6">
             <!-- Loading -->
-            <div v-if="isLoadingList" class="flex flex-col items-center justify-center h-full gap-4">
+            <div
+              v-if="isLoadingList"
+              class="flex flex-col items-center justify-center h-full gap-4"
+            >
               <div class="w-10 h-10 border-3 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
-              <p class="text-white/40 text-sm">Loading fonts...</p>
+              <p class="text-white/40 text-sm">
+                Loading fonts...
+              </p>
             </div>
 
             <!-- Google Fonts Grid -->
-            <div v-else-if="activeTab === 'google'" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div
+              v-else-if="activeTab === 'google'"
+              class="grid grid-cols-2 md:grid-cols-3 gap-3"
+            >
               <div
                 v-for="font in filteredGoogleFonts"
                 :key="font.family"
-                @mouseenter="previewFont(font.family)"
                 class="group relative p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-violet-500/30 hover:bg-white/[0.04] transition-all cursor-pointer"
+                @mouseenter="previewFont(font.family)"
               >
                 <!-- Font Preview -->
                 <div class="mb-3">
                   <p 
                     class="text-xl text-white/90 truncate leading-tight"
                     :style="{ fontFamily: `'${font.family}', sans-serif` }"
-                  >{{ font.family }}</p>
+                  >
+                    {{ font.family }}
+                  </p>
                   <p 
                     class="text-sm text-white/40 mt-1 line-clamp-2"
                     :style="{ fontFamily: `'${font.family}', sans-serif` }"
-                  >{{ previewText }}</p>
+                  >
+                    {{ previewText }}
+                  </p>
                 </div>
 
                 <!-- Meta -->
@@ -316,8 +399,16 @@ onMounted(async () => {
                     class="flex items-center gap-1 px-2 py-1 rounded-md bg-green-500/20 text-green-400 text-xs"
                     disabled
                   >
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    <svg
+                      class="w-3 h-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
                     </svg>
                     Added
                   </button>
@@ -331,11 +422,21 @@ onMounted(async () => {
                   </button>
                   <button
                     v-else
-                    @click.stop="addGoogleFont(font)"
                     class="flex items-center gap-1 px-2 py-1 rounded-md bg-violet-500/20 text-violet-300 text-xs opacity-0 group-hover:opacity-100 hover:bg-violet-500/30 transition-all"
+                    @click.stop="addGoogleFont(font)"
                   >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    <svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v16m8-8H4"
+                      />
                     </svg>
                     Add
                   </button>
@@ -343,16 +444,34 @@ onMounted(async () => {
               </div>
 
               <!-- Empty State -->
-              <div v-if="filteredGoogleFonts.length === 0" class="col-span-full flex flex-col items-center justify-center py-12">
-                <svg class="w-12 h-12 text-white/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div
+                v-if="filteredGoogleFonts.length === 0"
+                class="col-span-full flex flex-col items-center justify-center py-12"
+              >
+                <svg
+                  class="w-12 h-12 text-white/20 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
-                <p class="text-white/40 text-sm">No fonts found</p>
+                <p class="text-white/40 text-sm">
+                  No fonts found
+                </p>
               </div>
             </div>
 
             <!-- Installed Fonts Grid -->
-            <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div
+              v-else
+              class="grid grid-cols-2 md:grid-cols-3 gap-3"
+            >
               <div
                 v-for="family in Array.from(loadedFonts)"
                 :key="family"
@@ -362,39 +481,78 @@ onMounted(async () => {
                   <p 
                     class="text-xl text-white/90 truncate leading-tight"
                     :style="{ fontFamily: `'${family}', sans-serif` }"
-                  >{{ family }}</p>
+                  >
+                    {{ family }}
+                  </p>
                   <p 
                     class="text-sm text-white/40 mt-1 line-clamp-2"
                     :style="{ fontFamily: `'${family}', sans-serif` }"
-                  >{{ previewText }}</p>
+                  >
+                    {{ previewText }}
+                  </p>
                 </div>
 
                 <div class="flex items-center justify-between">
                   <span class="text-[10px] text-green-400/70 flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    <svg
+                      class="w-3 h-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
                     </svg>
                     Installed
                   </span>
                   <button
-                    @click="removeFont(family)"
                     class="p-1 rounded text-white/30 hover:text-red-400 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all"
                     title="Remove font"
+                    @click="removeFont(family)"
                   >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
                     </svg>
                   </button>
                 </div>
               </div>
 
               <!-- Empty State -->
-              <div v-if="loadedFonts.size === 0" class="col-span-full flex flex-col items-center justify-center py-12">
-                <svg class="w-12 h-12 text-white/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <div
+                v-if="loadedFonts.size === 0"
+                class="col-span-full flex flex-col items-center justify-center py-12"
+              >
+                <svg
+                  class="w-12 h-12 text-white/20 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
                 </svg>
-                <p class="text-white/40 text-sm mb-2">No fonts installed yet</p>
-                <p class="text-white/25 text-xs">Browse Google Fonts or import your own</p>
+                <p class="text-white/40 text-sm mb-2">
+                  No fonts installed yet
+                </p>
+                <p class="text-white/25 text-xs">
+                  Browse Google Fonts or import your own
+                </p>
               </div>
             </div>
           </div>
@@ -406,8 +564,8 @@ onMounted(async () => {
               <span v-else>{{ loadedFonts.size }} fonts in your library</span>
             </p>
             <button
-              @click="emit('close')"
               class="px-4 py-2 rounded-lg bg-violet-500 text-white text-sm font-medium hover:bg-violet-600 transition-colors"
+              @click="emit('close')"
             >
               Done
             </button>

@@ -236,6 +236,7 @@ export interface PdfAnalysis {
 /** Extended document response with analysis */
 export interface DocumentResponseWithAnalysis extends DocumentResponse {
   analysis?: PdfAnalysis;
+  imposition?: ImpositionResult;
 }
 
 /** OCR reconstruction options */
@@ -274,10 +275,11 @@ export interface OcrResult {
 
 /** Import mode determines how the document is processed */
 export type ImportMode = 
-  | 'preserve'  // Embed as-is, no editing (fastest, smallest)
+  | 'preserve'  // Embed as-is, no editing (fastest, smallest) - good for print
   | 'layers'    // Extract layers for editing (default)
   | 'ocr'       // Run OCR for text recognition
-  | 'print';    // Print/booklet mode with imposition
+  | 'print'     // Print/booklet mode with imposition
+  | 'combined'; // Combine multiple options (layers + ocr, layers + print, etc.)
 
 /** Print imposition layout */
 export type ImpositionLayout = 

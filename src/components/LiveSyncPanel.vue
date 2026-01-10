@@ -77,20 +77,32 @@ function togglePanel() {
   <div class="relative">
     <!-- Toggle Button -->
     <button
-      @click="togglePanel"
       class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors"
       :class="isConnected 
         ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' 
         : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'"
+      @click="togglePanel"
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-          d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2" 
+          d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
+        />
       </svg>
       <span class="text-sm font-medium">
         {{ isConnected ? `Live (${peerCount})` : 'Live Sync' }}
       </span>
-      <span v-if="isConnected" class="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+      <span
+        v-if="isConnected"
+        class="w-2 h-2 rounded-full bg-green-400 animate-pulse"
+      />
     </button>
 
     <!-- Panel -->
@@ -107,7 +119,10 @@ function togglePanel() {
         class="absolute right-0 top-full mt-2 w-80 bg-zinc-800 rounded-xl shadow-xl border border-zinc-700 overflow-hidden z-50"
       >
         <!-- Connected State -->
-        <div v-if="isConnected" class="p-4">
+        <div
+          v-if="isConnected"
+          class="p-4"
+        >
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-green-400" />
@@ -117,8 +132,8 @@ function togglePanel() {
               </span>
             </div>
             <button
-              @click="handleLeave"
               class="text-xs text-red-400 hover:text-red-300"
+              @click="handleLeave"
             >
               Leave
             </button>
@@ -126,7 +141,9 @@ function togglePanel() {
 
           <!-- Session Info -->
           <div class="mb-4 p-3 bg-zinc-900 rounded-lg">
-            <div class="text-xs text-zinc-400 mb-1">Session</div>
+            <div class="text-xs text-zinc-400 mb-1">
+              Session
+            </div>
             <div class="text-sm text-white font-medium truncate">
               {{ syncStore.session?.name || 'Unknown' }}
             </div>
@@ -136,8 +153,13 @@ function togglePanel() {
           </div>
 
           <!-- Share Links (Host only) -->
-          <div v-if="isHosting" class="space-y-2">
-            <div class="text-xs text-zinc-400 mb-2">Share Links</div>
+          <div
+            v-if="isHosting"
+            class="space-y-2"
+          >
+            <div class="text-xs text-zinc-400 mb-2">
+              Share Links
+            </div>
             
             <!-- Viewer Link -->
             <div class="flex items-center gap-2">
@@ -145,8 +167,8 @@ function togglePanel() {
                 {{ syncStore.viewerLink?.slice(0, 30) }}...
               </div>
               <button
-                @click="copyLink('viewer')"
                 class="px-2 py-1.5 text-xs bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30"
+                @click="copyLink('viewer')"
               >
                 {{ copiedLink === 'viewer' ? '✓' : 'View' }}
               </button>
@@ -158,8 +180,8 @@ function togglePanel() {
                 {{ syncStore.commenterLink?.slice(0, 30) }}...
               </div>
               <button
-                @click="copyLink('commenter')"
                 class="px-2 py-1.5 text-xs bg-yellow-500/20 text-yellow-400 rounded hover:bg-yellow-500/30"
+                @click="copyLink('commenter')"
               >
                 {{ copiedLink === 'commenter' ? '✓' : 'Comment' }}
               </button>
@@ -171,8 +193,8 @@ function togglePanel() {
                 {{ syncStore.editorLink?.slice(0, 30) }}...
               </div>
               <button
-                @click="copyLink('editor')"
                 class="px-2 py-1.5 text-xs bg-green-500/20 text-green-400 rounded hover:bg-green-500/30"
+                @click="copyLink('editor')"
               >
                 {{ copiedLink === 'editor' ? '✓' : 'Edit' }}
               </button>
@@ -180,8 +202,13 @@ function togglePanel() {
           </div>
 
           <!-- Peers List -->
-          <div v-if="syncStore.peerList.length > 0" class="mt-4">
-            <div class="text-xs text-zinc-400 mb-2">Peers</div>
+          <div
+            v-if="syncStore.peerList.length > 0"
+            class="mt-4"
+          >
+            <div class="text-xs text-zinc-400 mb-2">
+              Peers
+            </div>
             <div class="space-y-1">
               <div
                 v-for="peer in syncStore.peerList"
@@ -204,20 +231,20 @@ function togglePanel() {
           <!-- Tabs -->
           <div class="flex border-b border-zinc-700">
             <button
-              @click="activeTab = 'host'"
               class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
               :class="activeTab === 'host' 
                 ? 'text-white border-b-2 border-blue-500' 
                 : 'text-zinc-400 hover:text-zinc-300'"
+              @click="activeTab = 'host'"
             >
               Host Session
             </button>
             <button
-              @click="activeTab = 'join'"
               class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
               :class="activeTab === 'join' 
                 ? 'text-white border-b-2 border-blue-500' 
                 : 'text-zinc-400 hover:text-zinc-300'"
+              @click="activeTab = 'join'"
             >
               Join Session
             </button>
@@ -225,7 +252,10 @@ function togglePanel() {
 
           <div class="p-4">
             <!-- Host Tab -->
-            <div v-if="activeTab === 'host'" class="space-y-3">
+            <div
+              v-if="activeTab === 'host'"
+              class="space-y-3"
+            >
               <div>
                 <label class="block text-xs text-zinc-400 mb-1">Your Name</label>
                 <input
@@ -233,7 +263,7 @@ function togglePanel() {
                   type="text"
                   placeholder="Enter your name"
                   class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
-                />
+                >
               </div>
               <div>
                 <label class="block text-xs text-zinc-400 mb-1">Session Name</label>
@@ -242,19 +272,22 @@ function togglePanel() {
                   type="text"
                   placeholder="My Book Project"
                   class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
-                />
+                >
               </div>
               <button
-                @click="handleCreateSession"
                 :disabled="isLoading || !userName.trim() || !sessionName.trim()"
                 class="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white text-sm font-medium rounded-lg transition-colors"
+                @click="handleCreateSession"
               >
                 {{ isLoading ? 'Creating...' : 'Create Session' }}
               </button>
             </div>
 
             <!-- Join Tab -->
-            <div v-if="activeTab === 'join'" class="space-y-3">
+            <div
+              v-if="activeTab === 'join'"
+              class="space-y-3"
+            >
               <div>
                 <label class="block text-xs text-zinc-400 mb-1">Your Name</label>
                 <input
@@ -262,7 +295,7 @@ function togglePanel() {
                   type="text"
                   placeholder="Enter your name"
                   class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
-                />
+                >
               </div>
               <div>
                 <label class="block text-xs text-zinc-400 mb-1">Invite Link</label>
@@ -271,24 +304,30 @@ function togglePanel() {
                   type="text"
                   placeholder="rook://sync/..."
                   class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
-                />
+                >
               </div>
               <button
-                @click="handleJoinSession"
                 :disabled="isLoading || !userName.trim() || !joinLink.trim()"
                 class="w-full py-2 bg-green-600 hover:bg-green-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white text-sm font-medium rounded-lg transition-colors"
+                @click="handleJoinSession"
               >
                 {{ isLoading ? 'Joining...' : 'Join Session' }}
               </button>
             </div>
 
             <!-- Error -->
-            <div v-if="error" class="mt-3 p-2 bg-red-500/20 border border-red-500/30 rounded text-xs text-red-400">
+            <div
+              v-if="error"
+              class="mt-3 p-2 bg-red-500/20 border border-red-500/30 rounded text-xs text-red-400"
+            >
               {{ error }}
             </div>
 
             <!-- Status -->
-            <div v-if="statusMessage && !error" class="mt-3 text-xs text-zinc-400 text-center">
+            <div
+              v-if="statusMessage && !error"
+              class="mt-3 text-xs text-zinc-400 text-center"
+            >
               {{ statusMessage }}
             </div>
           </div>

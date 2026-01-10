@@ -150,10 +150,15 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
 
 <template>
   <div class="flex flex-col gap-4 p-1">
-    <h3 class="text-xs font-medium text-white/40 uppercase tracking-wider">Watermark</h3>
+    <h3 class="text-xs font-medium text-white/40 uppercase tracking-wider">
+      Watermark
+    </h3>
 
     <!-- No watermark selected -->
-    <div v-if="!isWatermarkSelected" class="text-center py-6 text-white/30 text-sm">
+    <div
+      v-if="!isWatermarkSelected"
+      class="text-center py-6 text-white/30 text-sm"
+    >
       Select a watermark layer to edit
     </div>
 
@@ -165,7 +170,10 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
         
         <!-- Image Preview / Upload -->
         <div class="relative h-24 rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
-          <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center">
+          <div
+            v-if="isLoading"
+            class="absolute inset-0 flex items-center justify-center"
+          >
             <div class="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
           </div>
           
@@ -175,11 +183,24 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
             class="w-full h-full object-contain"
             :style="{ opacity: selectedLayer.opacity, mixBlendMode: (selectedLayer.blendMode || 'normal') as any }"
             alt="Watermark preview"
-          />
+          >
           
-          <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-white/30">
-            <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <div
+            v-else
+            class="absolute inset-0 flex flex-col items-center justify-center text-white/30"
+          >
+            <svg
+              class="w-8 h-8 mb-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <span class="text-[10px]">No image</span>
           </div>
@@ -188,16 +209,16 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
         <!-- Image Actions -->
         <div class="flex gap-2">
           <button
-            @click="handleImageUpload"
             :disabled="isLoading"
             class="flex-1 py-2 px-3 rounded-lg text-xs font-medium bg-violet-500/20 text-violet-300 hover:bg-violet-500/30 transition-colors disabled:opacity-50"
+            @click="handleImageUpload"
           >
             {{ selectedLayer.imageUrl ? 'Replace' : 'Upload' }}
           </button>
           <button
             v-if="selectedLayer.imageUrl"
-            @click="removeImage"
             class="py-2 px-3 rounded-lg text-xs font-medium bg-red-500/20 text-red-300 hover:bg-red-500/30 transition-colors"
+            @click="removeImage"
           >
             Remove
           </button>
@@ -211,20 +232,23 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
           <button
             v-for="mode in blendModes"
             :key="mode.value"
-            @mouseenter="onBlendModeHover(mode.value)"
-            @mouseleave="onBlendModeLeave"
-            @click="applyBlendMode(mode.value)"
             :class="[
               'py-1.5 px-1 rounded text-[9px] font-medium transition-all',
               (selectedLayer.blendMode === mode.value && !previewBlendMode) || previewBlendMode === mode.value
                 ? 'bg-violet-500/30 text-violet-200 ring-1 ring-violet-500/50'
                 : 'bg-white/[0.03] text-white/50 hover:bg-white/[0.06]'
             ]"
+            @mouseenter="onBlendModeHover(mode.value)"
+            @mouseleave="onBlendModeLeave"
+            @click="applyBlendMode(mode.value)"
           >
             {{ mode.label }}
           </button>
         </div>
-        <div v-if="previewBlendMode" class="text-[10px] text-violet-400 text-center">
+        <div
+          v-if="previewBlendMode"
+          class="text-[10px] text-violet-400 text-center"
+        >
           Preview: {{ blendModes.find(m => m.value === previewBlendMode)?.label }}
         </div>
       </div>
@@ -234,13 +258,13 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
         <div class="flex items-center justify-between">
           <label class="text-[10px] text-white/30 uppercase">Position</label>
           <button
-            @click="onPositionChange('tile')"
             :class="[
               'px-2 py-1 rounded text-[10px] font-medium transition-all',
               selectedLayer.watermarkPosition === 'tile'
                 ? 'bg-violet-500/30 text-violet-200'
                 : 'bg-white/[0.03] text-white/50 hover:bg-white/[0.06]'
             ]"
+            @click="onPositionChange('tile')"
           >
             ⊞ Tile
           </button>
@@ -249,13 +273,13 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
           <button
             v-for="pos in positionGrid"
             :key="pos.value"
-            @click="onPositionChange(pos.value)"
             :class="[
               'aspect-square rounded-lg flex items-center justify-center text-base transition-all',
               selectedLayer.watermarkPosition === pos.value
                 ? 'bg-violet-500/30 text-violet-200 ring-1 ring-violet-500/50'
                 : 'bg-white/[0.03] text-white/40 hover:bg-white/[0.06]'
             ]"
+            @click="onPositionChange(pos.value)"
           >
             {{ pos.icon }}
           </button>
@@ -263,7 +287,10 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
       </div>
 
       <!-- Tile Spacing (only for tile mode) -->
-      <div v-if="selectedLayer.watermarkPosition === 'tile'" class="space-y-1">
+      <div
+        v-if="selectedLayer.watermarkPosition === 'tile'"
+        class="space-y-1"
+      >
         <label class="text-[10px] text-white/30 uppercase">Tile Spacing</label>
         <ElasticSlider
           :default-value="selectedLayer.watermarkTileSpacing ?? 80"
@@ -274,8 +301,12 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
           class="slider-style"
           @update:model-value="onSliderChange('watermarkTileSpacing', $event)"
         >
-          <template #left-icon><span class="text-white/30 text-xs">20</span></template>
-          <template #right-icon><span class="text-white/30 text-xs">200</span></template>
+          <template #left-icon>
+            <span class="text-white/30 text-xs">20</span>
+          </template>
+          <template #right-icon>
+            <span class="text-white/30 text-xs">200</span>
+          </template>
         </ElasticSlider>
       </div>
 
@@ -289,8 +320,12 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
           class="slider-style"
           @update:model-value="onSliderChange('opacity', $event)"
         >
-          <template #left-icon><span class="text-white/30 text-xs">0</span></template>
-          <template #right-icon><span class="text-white/30 text-xs">100</span></template>
+          <template #left-icon>
+            <span class="text-white/30 text-xs">0</span>
+          </template>
+          <template #right-icon>
+            <span class="text-white/30 text-xs">100</span>
+          </template>
         </ElasticSlider>
       </div>
 
@@ -304,8 +339,12 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
           class="slider-style"
           @update:model-value="onSliderChange('watermarkScale', $event)"
         >
-          <template #left-icon><span class="text-white/30 text-xs">10</span></template>
-          <template #right-icon><span class="text-white/30 text-xs">300</span></template>
+          <template #left-icon>
+            <span class="text-white/30 text-xs">10</span>
+          </template>
+          <template #right-icon>
+            <span class="text-white/30 text-xs">300</span>
+          </template>
         </ElasticSlider>
       </div>
 
@@ -319,8 +358,12 @@ function onSliderChange(key: 'opacity' | 'watermarkScale' | 'watermarkRotation' 
           class="slider-style"
           @update:model-value="onSliderChange('watermarkRotation', $event)"
         >
-          <template #left-icon><span class="text-white/30 text-xs">-180°</span></template>
-          <template #right-icon><span class="text-white/30 text-xs">180°</span></template>
+          <template #left-icon>
+            <span class="text-white/30 text-xs">-180°</span>
+          </template>
+          <template #right-icon>
+            <span class="text-white/30 text-xs">180°</span>
+          </template>
         </ElasticSlider>
       </div>
     </template>

@@ -161,7 +161,11 @@ const bgGlowStyle = computed<CSSProperties>(() => ({
 </script>
 
 <template>
-  <div ref="rootRef" :class="['relative isolate', className]" :style="style">
+  <div
+    ref="rootRef"
+    :class="['relative isolate', className]"
+    :style="style"
+  >
     <svg
       ref="svgRef"
       class="fixed opacity-0 w-0 h-0 pointer-events-none"
@@ -170,30 +174,120 @@ const bgGlowStyle = computed<CSSProperties>(() => ({
       focusable="false"
     >
       <defs>
-        <filter :id="filterId" color-interpolation-filters="sRGB" x="-200%" y="-200%" width="500%" height="500%">
-          <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="8" result="noise1" seed="1" />
-          <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-            <animate attributeName="dy" values="500; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+        <filter
+          :id="filterId"
+          color-interpolation-filters="sRGB"
+          x="-200%"
+          y="-200%"
+          width="500%"
+          height="500%"
+        >
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.015"
+            numOctaves="8"
+            result="noise1"
+            seed="1"
+          />
+          <feOffset
+            in="noise1"
+            dx="0"
+            dy="0"
+            result="offsetNoise1"
+          >
+            <animate
+              attributeName="dy"
+              values="500; 0"
+              dur="6s"
+              repeatCount="indefinite"
+              calcMode="linear"
+            />
           </feOffset>
 
-          <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="8" result="noise2" seed="3" />
-          <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-            <animate attributeName="dy" values="0; -500" dur="6s" repeatCount="indefinite" calcMode="linear" />
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.015"
+            numOctaves="8"
+            result="noise2"
+            seed="3"
+          />
+          <feOffset
+            in="noise2"
+            dx="0"
+            dy="0"
+            result="offsetNoise2"
+          >
+            <animate
+              attributeName="dy"
+              values="0; -500"
+              dur="6s"
+              repeatCount="indefinite"
+              calcMode="linear"
+            />
           </feOffset>
 
-          <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="6" result="noise3" seed="5" />
-          <feOffset in="noise3" dx="0" dy="0" result="offsetNoise3">
-            <animate attributeName="dx" values="500; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.02"
+            numOctaves="6"
+            result="noise3"
+            seed="5"
+          />
+          <feOffset
+            in="noise3"
+            dx="0"
+            dy="0"
+            result="offsetNoise3"
+          >
+            <animate
+              attributeName="dx"
+              values="500; 0"
+              dur="6s"
+              repeatCount="indefinite"
+              calcMode="linear"
+            />
           </feOffset>
 
-          <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="6" result="noise4" seed="7" />
-          <feOffset in="noise4" dx="0" dy="0" result="offsetNoise4">
-            <animate attributeName="dx" values="0; -500" dur="6s" repeatCount="indefinite" calcMode="linear" />
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.02"
+            numOctaves="6"
+            result="noise4"
+            seed="7"
+          />
+          <feOffset
+            in="noise4"
+            dx="0"
+            dy="0"
+            result="offsetNoise4"
+          >
+            <animate
+              attributeName="dx"
+              values="0; -500"
+              dur="6s"
+              repeatCount="indefinite"
+              calcMode="linear"
+            />
           </feOffset>
 
-          <feComposite in="offsetNoise1" in2="offsetNoise2" operator="add" result="verticalNoise" />
-          <feComposite in="offsetNoise3" in2="offsetNoise4" operator="add" result="horizontalNoise" />
-          <feBlend in="verticalNoise" in2="horizontalNoise" mode="screen" result="combinedNoise" />
+          <feComposite
+            in="offsetNoise1"
+            in2="offsetNoise2"
+            operator="add"
+            result="verticalNoise"
+          />
+          <feComposite
+            in="offsetNoise3"
+            in2="offsetNoise4"
+            operator="add"
+            result="horizontalNoise"
+          />
+          <feBlend
+            in="verticalNoise"
+            in2="horizontalNoise"
+            mode="screen"
+            result="combinedNoise"
+          />
 
           <feDisplacementMap
             in="SourceGraphic"
@@ -207,14 +301,33 @@ const bgGlowStyle = computed<CSSProperties>(() => ({
       </defs>
     </svg>
 
-    <div class="absolute inset-0 pointer-events-none" :style="inheritRadius">
-      <div ref="strokeRef" class="box-border absolute inset-0" :style="strokeStyle" />
-      <div class="box-border absolute inset-0" :style="glow1Style" />
-      <div class="box-border absolute inset-0" :style="glow2Style" />
-      <div class="absolute inset-0" :style="bgGlowStyle" />
+    <div
+      class="absolute inset-0 pointer-events-none"
+      :style="inheritRadius"
+    >
+      <div
+        ref="strokeRef"
+        class="box-border absolute inset-0"
+        :style="strokeStyle"
+      />
+      <div
+        class="box-border absolute inset-0"
+        :style="glow1Style"
+      />
+      <div
+        class="box-border absolute inset-0"
+        :style="glow2Style"
+      />
+      <div
+        class="absolute inset-0"
+        :style="bgGlowStyle"
+      />
     </div>
 
-    <div class="relative" :style="inheritRadius">
+    <div
+      class="relative"
+      :style="inheritRadius"
+    >
       <slot />
     </div>
   </div>

@@ -18,6 +18,7 @@ pub mod ocr_handler;
 pub mod path_ops;
 pub mod pdf_analyzer;
 pub mod pdf_reconstructor;
+pub mod print_service;
 pub mod text_ops;
 
 use tauri::http::{Request, Response};
@@ -134,6 +135,9 @@ pub fn run() {
             live_sync::create_layer_update_op,
             live_sync::create_cursor_op,
             live_sync::create_presence_op,
+            // Print service commands
+            print_service::calculate_booklet_imposition,
+            print_service::get_paper_dimensions,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
